@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/tosch110/ethapp/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/ethapp/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
@@ -29,7 +29,7 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 
 	ethappQueryCmd.AddCommand(
 		flags.GetCommands(
-      // this line is used by starport scaffolding
+		// this line is used by starport scaffolding
 		)...,
 	)
 

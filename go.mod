@@ -1,4 +1,4 @@
-module github.com/tosch110/ethapp
+module github.com/wirelineio/dxns
 
 go 1.14
 

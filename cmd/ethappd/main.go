@@ -30,7 +30,7 @@ import (
 	ethermintclient "github.com/cosmos/ethermint/client"
 	ethermintcrypto "github.com/cosmos/ethermint/crypto"
 
-	"github.com/tosch110/ethapp/app"
+	"github.com/wirelineio/dxns/app"
 )
 
 const flagInvCheckPeriod = "inv-check-period"

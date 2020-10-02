@@ -13,10 +13,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/tosch110/ethapp/x/ethapp/client/cli"
-	"github.com/tosch110/ethapp/x/ethapp/client/rest"
-	"github.com/tosch110/ethapp/x/ethapp/keeper"
-	"github.com/tosch110/ethapp/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/ethapp/client/cli"
+	"github.com/wirelineio/dxns/x/ethapp/client/rest"
+	"github.com/wirelineio/dxns/x/ethapp/keeper"
+	"github.com/wirelineio/dxns/x/ethapp/types"
 )
 
 // Type check to ensure the interface is properly implemented

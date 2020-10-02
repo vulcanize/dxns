@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/tosch110/ethapp/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/ethapp/types"
 )
 
 // Keeper of the ethapp store

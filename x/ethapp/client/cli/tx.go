@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/tosch110/ethapp/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/ethapp/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -22,7 +22,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	ethappTxCmd.AddCommand(flags.PostCommands(
-    // this line is used by starport scaffolding
+	// this line is used by starport scaffolding
 	)...)
 
 	return ethappTxCmd

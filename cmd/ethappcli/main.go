@@ -26,7 +26,7 @@ import (
 	ethermintcrypto "github.com/cosmos/ethermint/crypto"
 	"github.com/cosmos/ethermint/rpc"
 
-	"github.com/tosch110/ethapp/app"
+	"github.com/wirelineio/dxns/app"
 )
 
 var (

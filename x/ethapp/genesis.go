@@ -2,8 +2,8 @@ package ethapp
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tosch110/ethapp/x/ethapp/keeper"
-	"github.com/tosch110/ethapp/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/ethapp/keeper"
+	"github.com/wirelineio/dxns/x/ethapp/types"
 	// abci "github.com/tendermint/tendermint/abci/types"
 )
 

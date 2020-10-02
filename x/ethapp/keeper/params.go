@@ -1,4 +1,5 @@
 package keeper
+
 /*
 // TODO: Define if your module needs Parameters, if not this can be deleted
 
@@ -6,7 +7,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/tosch110/ethapp/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/ethapp/types"
 )
 
 // GetParams returns the total set of ethapp parameters.
