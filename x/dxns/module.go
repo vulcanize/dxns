@@ -1,4 +1,4 @@
-package ethapp
+package dxns
 
 import (
 	"encoding/json"
@@ -13,10 +13,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/wirelineio/dxns/x/ethapp/client/cli"
-	"github.com/wirelineio/dxns/x/ethapp/client/rest"
-	"github.com/wirelineio/dxns/x/ethapp/keeper"
-	"github.com/wirelineio/dxns/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/dxns/client/cli"
+	"github.com/wirelineio/dxns/x/dxns/client/rest"
+	"github.com/wirelineio/dxns/x/dxns/keeper"
+	"github.com/wirelineio/dxns/x/dxns/types"
 )
 
 // Type check to ensure the interface is properly implemented
@@ -25,26 +25,26 @@ var (
 	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
-// AppModuleBasic defines the basic application module used by the ethapp module.
+// AppModuleBasic defines the basic application module used by the dxns module.
 type AppModuleBasic struct{}
 
-// Name returns the ethapp module's name.
+// Name returns the dxns module's name.
 func (AppModuleBasic) Name() string {
 	return types.ModuleName
 }
 
-// RegisterCodec registers the ethapp module's types for the given codec.
+// RegisterCodec registers the dxns module's types for the given codec.
 func (AppModuleBasic) RegisterCodec(cdc *codec.Codec) {
 	types.RegisterCodec(cdc)
 }
 
-// DefaultGenesis returns default genesis state as raw bytes for the ethapp
+// DefaultGenesis returns default genesis state as raw bytes for the dxns
 // module.
 func (AppModuleBasic) DefaultGenesis() json.RawMessage {
 	return types.ModuleCdc.MustMarshalJSON(types.DefaultGenesisState())
 }
 
-// ValidateGenesis performs genesis state validation for the ethapp module.
+// ValidateGenesis performs genesis state validation for the dxns module.
 func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 	var data types.GenesisState
 	err := types.ModuleCdc.UnmarshalJSON(bz, &data)
@@ -54,24 +54,24 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 	return types.ValidateGenesis(data)
 }
 
-// RegisterRESTRoutes registers the REST routes for the ethapp module.
+// RegisterRESTRoutes registers the REST routes for the dxns module.
 func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
 	rest.RegisterRoutes(ctx, rtr)
 }
 
-// GetTxCmd returns the root tx command for the ethapp module.
+// GetTxCmd returns the root tx command for the dxns module.
 func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetTxCmd(cdc)
 }
 
-// GetQueryCmd returns no root query command for the ethapp module.
+// GetQueryCmd returns no root query command for the dxns module.
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(types.StoreKey, cdc)
 }
 
 //____________________________________________________________________________
 
-// AppModule implements an application module for the ethapp module.
+// AppModule implements an application module for the dxns module.
 type AppModule struct {
 	AppModuleBasic
 
@@ -91,35 +91,35 @@ func NewAppModule(k keeper.Keeper, bankKeeper bank.Keeper) AppModule {
 	}
 }
 
-// Name returns the ethapp module's name.
+// Name returns the dxns module's name.
 func (AppModule) Name() string {
 	return types.ModuleName
 }
 
-// RegisterInvariants registers the ethapp module invariants.
+// RegisterInvariants registers the dxns module invariants.
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-// Route returns the message routing key for the ethapp module.
+// Route returns the message routing key for the dxns module.
 func (AppModule) Route() string {
 	return types.RouterKey
 }
 
-// NewHandler returns an sdk.Handler for the ethapp module.
+// NewHandler returns an sdk.Handler for the dxns module.
 func (am AppModule) NewHandler() sdk.Handler {
 	return NewHandler(am.keeper)
 }
 
-// QuerierRoute returns the ethapp module's querier route name.
+// QuerierRoute returns the dxns module's querier route name.
 func (AppModule) QuerierRoute() string {
 	return types.QuerierRoute
 }
 
-// NewQuerierHandler returns the ethapp module sdk.Querier.
+// NewQuerierHandler returns the dxns module sdk.Querier.
 func (am AppModule) NewQuerierHandler() sdk.Querier {
 	return keeper.NewQuerier(am.keeper)
 }
 
-// InitGenesis performs genesis initialization for the ethapp module. It returns
+// InitGenesis performs genesis initialization for the dxns module. It returns
 // no validator updates.
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
 	var genesisState types.GenesisState
@@ -128,19 +128,19 @@ func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.Va
 	return []abci.ValidatorUpdate{}
 }
 
-// ExportGenesis returns the exported genesis state as raw bytes for the ethapp
+// ExportGenesis returns the exported genesis state as raw bytes for the dxns
 // module.
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
 	gs := ExportGenesis(ctx, am.keeper)
 	return types.ModuleCdc.MustMarshalJSON(gs)
 }
 
-// BeginBlock returns the begin blocker for the ethapp module.
+// BeginBlock returns the begin blocker for the dxns module.
 func (am AppModule) BeginBlock(ctx sdk.Context, req abci.RequestBeginBlock) {
 	BeginBlocker(ctx, req, am.keeper)
 }
 
-// EndBlock returns the end blocker for the ethapp module. It returns no validator
+// EndBlock returns the end blocker for the dxns module. It returns no validator
 // updates.
 func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}

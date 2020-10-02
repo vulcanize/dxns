@@ -50,8 +50,8 @@ func main() {
 	config.Seal()
 
 	rootCmd := &cobra.Command{
-		Use:   "ethappcli",
-		Short: "Command line interface for interacting with ethappd",
+		Use:   "dxnscli",
+		Short: "Command line interface for interacting with dxnsd",
 	}
 
 	// Add --chain-id to persistent flags and mark it required

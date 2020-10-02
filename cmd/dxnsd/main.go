@@ -58,7 +58,7 @@ func main() {
 	ctx := server.NewDefaultContext()
 
 	rootCmd := &cobra.Command{
-		Use:               "ethappd",
+		Use:               "dxnsd",
 		Short:             "Ethapp Chain App Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
@@ -109,14 +109,14 @@ func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
-	ethappChain := app.NewAppInit(logger, db, traceStore, true, 0)
+	dxnsChain := app.NewAppInit(logger, db, traceStore, true, 0)
 
 	if height != -1 {
-		err := ethappChain.LoadHeight(height)
+		err := dxnsChain.LoadHeight(height)
 		if err != nil {
 			return nil, nil, err
 		}
 	}
 
-	return ethappChain.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+	return dxnsChain.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }

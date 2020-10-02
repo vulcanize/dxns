@@ -8,12 +8,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/wirelineio/dxns/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/dxns/types"
 )
 
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd(cdc *codec.Codec) *cobra.Command {
-	ethappTxCmd := &cobra.Command{
+	dxnsTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -21,9 +21,9 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	ethappTxCmd.AddCommand(flags.PostCommands(
+	dxnsTxCmd.AddCommand(flags.PostCommands(
 	// this line is used by starport scaffolding
 	)...)
 
-	return ethappTxCmd
+	return dxnsTxCmd
 }

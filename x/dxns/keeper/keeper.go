@@ -8,10 +8,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/wirelineio/dxns/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/dxns/types"
 )
 
-// Keeper of the ethapp store
+// Keeper of the dxns store
 type Keeper struct {
 	CoinKeeper bank.Keeper
 	storeKey   sdk.StoreKey
@@ -19,7 +19,7 @@ type Keeper struct {
 	// paramspace types.ParamSubspace
 }
 
-// NewKeeper creates a ethapp keeper
+// NewKeeper creates a dxns keeper
 func NewKeeper(coinKeeper bank.Keeper, cdc *codec.Codec, key sdk.StoreKey) Keeper {
 	keeper := Keeper{
 		CoinKeeper: coinKeeper,

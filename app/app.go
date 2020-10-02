@@ -38,14 +38,14 @@ func init() {
 	SetBip44CoinType(config)
 }
 
-const appName = "ethapp"
+const appName = "dxns"
 
 var (
 	// DefaultCLIHome sets the default home directories for the application CLI
-	DefaultCLIHome = os.ExpandEnv("$HOME/.ethappcli")
+	DefaultCLIHome = os.ExpandEnv("$HOME/.dxnscli")
 
 	// DefaultNodeHome sets the folder where the application data and configuration will be stored
-	DefaultNodeHome = os.ExpandEnv("$HOME/.ethappd")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.dxnsd")
 
 	// ModuleBasics defines the module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration

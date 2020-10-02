@@ -13,13 +13,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/wirelineio/dxns/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/dxns/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module
 func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
-	// Group ethapp queries under a subcommand
-	ethappQueryCmd := &cobra.Command{
+	// Group dxns queries under a subcommand
+	dxnsQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
@@ -27,11 +27,11 @@ func GetQueryCmd(queryRoute string, cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	ethappQueryCmd.AddCommand(
+	dxnsQueryCmd.AddCommand(
 		flags.GetCommands(
 		// this line is used by starport scaffolding
 		)...,
 	)
 
-	return ethappQueryCmd
+	return dxnsQueryCmd
 }

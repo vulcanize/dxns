@@ -1,4 +1,4 @@
-# ethapp module specification
+# dxns module specification
 
 ## Abstract
 

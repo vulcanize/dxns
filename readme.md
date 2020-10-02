@@ -4,15 +4,15 @@
 ```
 make install
 ./init.sh
-ethappd start
+dxnsd start
 # in a new terminal window
-ethappcli rest-server --laddr "tcp://localhost:8545" --trace --chain-id ethapp-1 --unlock-key me
+dxnscli rest-server --laddr "tcp://localhost:8545" --trace --chain-id dxns-1 --unlock-key me
 ```
 
 
-# ethapp
+# dxns
 
-**ethapp** is a blockchain application built using Cosmos SDK and Tendermint and generated with [Starport](https://github.com/tendermint/starport).
+**dxns** is a blockchain application built using Cosmos SDK and Tendermint and generated with [Starport](https://github.com/tendermint/starport).
 
 ## Get started
 

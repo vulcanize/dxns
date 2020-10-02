@@ -1,6 +1,6 @@
 package types
 
-// GenesisState - all ethapp state that must be provided at genesis
+// GenesisState - all dxns state that must be provided at genesis
 type GenesisState struct {
 	// TODO: Fill out what is needed by the module for genesis
 }
@@ -19,7 +19,7 @@ func DefaultGenesisState() GenesisState {
 	}
 }
 
-// ValidateGenesis validates the ethapp genesis parameters
+// ValidateGenesis validates the dxns genesis parameters
 func ValidateGenesis(data GenesisState) error {
 	// TODO: Create a sanity check to make sure the state conforms to the modules needs
 	return nil

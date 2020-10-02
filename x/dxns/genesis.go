@@ -1,9 +1,9 @@
-package ethapp
+package dxns
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/wirelineio/dxns/x/ethapp/keeper"
-	"github.com/wirelineio/dxns/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/dxns/keeper"
+	"github.com/wirelineio/dxns/x/dxns/types"
 	// abci "github.com/tendermint/tendermint/abci/types"
 )
 

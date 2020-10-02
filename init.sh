@@ -1,21 +1,21 @@
 #!/bin/bash
-rm -r ~/.ethappcli
-rm -r ~/.ethappd
+rm -r ~/.dxnscli
+rm -r ~/.dxnsd
 
-ethappd init mynode --chain-id ethapp-1
+dxnsd init mynode --chain-id dxns-1
 
-ethappcli config keyring-backend test
+dxnscli config keyring-backend test
 
-ethappcli keys add me
-ethappcli keys add you
+dxnscli keys add me
+dxnscli keys add you
 
-ethappd add-genesis-account $(ethappcli keys show me -a) 3500000000000000000aphoton,100000000stake
-ethappd add-genesis-account $(ethappcli keys show you -a) 1000000000000000000aphoton
+dxnsd add-genesis-account $(dxnscli keys show me -a) 3500000000000000000aphoton,100000000stake
+dxnsd add-genesis-account $(dxnscli keys show you -a) 1000000000000000000aphoton
 
-ethappcli config chain-id ethapp-1
-ethappcli config output json
-ethappcli config indent true
-ethappcli config trust-node true
+dxnscli config chain-id dxns-1
+dxnscli config output json
+dxnscli config indent true
+dxnscli config trust-node true
 
-ethappd gentx --name me --keyring-backend test
-ethappd collect-gentxs
+dxnsd gentx --name me --keyring-backend test
+dxnsd collect-gentxs

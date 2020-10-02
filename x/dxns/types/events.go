@@ -1,6 +1,6 @@
 package types
 
-// ethapp module event types
+// dxns module event types
 const (
 	// TODO: Create your event types
 	// EventType<Action>    		= "action"

@@ -1,12 +1,12 @@
-package ethapp
+package dxns
 
 import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/wirelineio/dxns/x/ethapp/keeper"
-	"github.com/wirelineio/dxns/x/ethapp/types"
+	"github.com/wirelineio/dxns/x/dxns/keeper"
+	"github.com/wirelineio/dxns/x/dxns/types"
 )
 
 // NewHandler ...
