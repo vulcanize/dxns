@@ -29,6 +29,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
+	"github.com/wirelineio/dxns/x/bond"
 )
 
 func init() {
@@ -61,6 +62,8 @@ var (
 		params.AppModuleBasic{},
 		slashing.AppModuleBasic{},
 		evm.AppModuleBasic{},
+
+		bond.AppModule{},
 	)
 
 	// module account permissions
@@ -70,6 +73,7 @@ var (
 		mint.ModuleName:           {supply.Minter},
 		staking.BondedPoolName:    {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
+		bond.ModuleName:           nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -107,6 +111,8 @@ type NewApp struct {
 	paramsKeeper   params.Keeper
 	EvmKeeper      evm.Keeper
 
+	bondKeeper bond.Keeper
+
 	// the module manager
 	mm *module.Manager
 
@@ -137,6 +143,7 @@ func NewAppInit(
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
 		params.StoreKey,
 		evm.StoreKey,
+		bond.StoreKey,
 	)
 
 	tKeys := sdk.NewTransientStoreKeys(params.TStoreKey)
@@ -159,6 +166,7 @@ func NewAppInit(
 	app.subspaces[distr.ModuleName] = app.paramsKeeper.Subspace(distr.DefaultParamspace)
 	app.subspaces[slashing.ModuleName] = app.paramsKeeper.Subspace(slashing.DefaultParamspace)
 	app.subspaces[evm.ModuleName] = app.paramsKeeper.Subspace(evm.DefaultParamspace)
+	app.subspaces[bond.ModuleName] = app.paramsKeeper.Subspace(bond.DefaultParamspace)
 
 	// use custom Chain account for contracts
 	app.accountKeeper = auth.NewAccountKeeper(
@@ -189,6 +197,17 @@ func NewAppInit(
 		app.cdc, keys[evm.StoreKey], app.subspaces[evm.ModuleName], app.accountKeeper,
 	)
 
+	app.bondKeeper = bond.NewKeeper(
+		app.accountKeeper,
+		app.bankKeeper,
+		app.supplyKeeper,
+		// TODO(ashwin): Add record keeper below (app.recordKeeper).
+		[]bond.BondUsageKeeper{},
+		keys[bond.StoreKey],
+		app.cdc,
+		app.subspaces[bond.ModuleName],
+	)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.stakingKeeper = *stakingKeeper.SetHooks(
@@ -207,6 +226,7 @@ func NewAppInit(
 		distr.NewAppModule(app.DistrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		evm.NewAppModule(app.EvmKeeper, app.accountKeeper),
+		bond.NewAppModule(app.bondKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -225,6 +245,7 @@ func NewAppInit(
 		auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
 		slashing.ModuleName, mint.ModuleName, supply.ModuleName,
 		genutil.ModuleName, evm.ModuleName,
+		bond.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

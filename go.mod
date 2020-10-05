@@ -6,14 +6,18 @@ require (
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200626160457-b38283118816 // indirect
 	github.com/cosmos/cosmos-sdk v0.39.1
 	github.com/cosmos/ethermint v0.2.0-rc6
-	github.com/cosmos/go-bip39 v0.0.0-20200817134856-d632e0d11689 // indirect
+	github.com/cosmos/go-bip39 v0.0.0-20200817134856-d632e0d11689
 	github.com/danieljoos/wincred v1.1.0 // indirect
+	github.com/deckarep/golang-set v1.7.1
 	github.com/ethereum/go-ethereum v1.9.21
+	github.com/gibson042/canonicaljson-go v1.0.3
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/gorilla/mux v1.8.0
+	github.com/ipfs/go-ipld-cbor v0.0.4
 	github.com/keybase/go-keychain v0.0.0-20200502122510-cda31fe0c86d // indirect
 	github.com/magiconair/properties v1.8.2 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
+	github.com/multiformats/go-multihash v0.0.14
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/prometheus/common v0.13.0 // indirect
 	github.com/spf13/afero v1.3.4 // indirect
