@@ -29,6 +29,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
+	"github.com/wirelineio/dxns/x/auction"
 	"github.com/wirelineio/dxns/x/bond"
 )
 
@@ -64,16 +65,19 @@ var (
 		evm.AppModuleBasic{},
 
 		bond.AppModule{},
+		auction.AppModule{},
 	)
 
 	// module account permissions
 	maccPerms = map[string][]string{
-		auth.FeeCollectorName:     nil,
-		distr.ModuleName:          nil,
-		mint.ModuleName:           {supply.Minter},
-		staking.BondedPoolName:    {supply.Burner, supply.Staking},
-		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
-		bond.ModuleName:           nil,
+		auth.FeeCollectorName:                nil,
+		distr.ModuleName:                     nil,
+		mint.ModuleName:                      {supply.Minter},
+		staking.BondedPoolName:               {supply.Burner, supply.Staking},
+		staking.NotBondedPoolName:            {supply.Burner, supply.Staking},
+		bond.ModuleName:                      nil,
+		auction.ModuleName:                   nil,
+		auction.AuctionBurnModuleAccountName: nil,
 	}
 
 	// module accounts that are allowed to receive tokens
@@ -111,7 +115,8 @@ type NewApp struct {
 	paramsKeeper   params.Keeper
 	EvmKeeper      evm.Keeper
 
-	bondKeeper bond.Keeper
+	bondKeeper    bond.Keeper
+	auctionKeeper auction.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -144,6 +149,7 @@ func NewAppInit(
 		params.StoreKey,
 		evm.StoreKey,
 		bond.StoreKey,
+		auction.StoreKey,
 	)
 
 	tKeys := sdk.NewTransientStoreKeys(params.TStoreKey)
@@ -167,6 +173,7 @@ func NewAppInit(
 	app.subspaces[slashing.ModuleName] = app.paramsKeeper.Subspace(slashing.DefaultParamspace)
 	app.subspaces[evm.ModuleName] = app.paramsKeeper.Subspace(evm.DefaultParamspace)
 	app.subspaces[bond.ModuleName] = app.paramsKeeper.Subspace(bond.DefaultParamspace)
+	app.subspaces[auction.ModuleName] = app.paramsKeeper.Subspace(auction.DefaultParamspace)
 
 	// use custom Chain account for contracts
 	app.accountKeeper = auth.NewAccountKeeper(
@@ -208,6 +215,15 @@ func NewAppInit(
 		app.subspaces[bond.ModuleName],
 	)
 
+	app.auctionKeeper = auction.NewKeeper(
+		app.accountKeeper,
+		app.bankKeeper,
+		app.supplyKeeper,
+		keys[auction.StoreKey],
+		app.cdc,
+		app.subspaces[auction.ModuleName],
+	)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.stakingKeeper = *stakingKeeper.SetHooks(
@@ -227,6 +243,7 @@ func NewAppInit(
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		evm.NewAppModule(app.EvmKeeper, app.accountKeeper),
 		bond.NewAppModule(app.bondKeeper),
+		auction.NewAppModule(app.auctionKeeper),
 	)
 
 	// During begin block slashing happens after distr.BeginBlocker so that
@@ -235,8 +252,10 @@ func NewAppInit(
 	app.mm.SetOrderBeginBlockers(
 		evm.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
 	)
+
+	// TODO(ashwin): Include staking, gov and crisis modules.
 	app.mm.SetOrderEndBlockers(
-		evm.ModuleName, staking.ModuleName,
+		evm.ModuleName, staking.ModuleName, auction.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -245,7 +264,7 @@ func NewAppInit(
 		auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
 		slashing.ModuleName, mint.ModuleName, supply.ModuleName,
 		genutil.ModuleName, evm.ModuleName,
-		bond.ModuleName,
+		bond.ModuleName, auction.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

@@ -6,6 +6,7 @@ package cli
 
 import (
 	"bufio"
+	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -23,7 +24,7 @@ import (
 func GetTxCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
 	bondTxCmd := &cobra.Command{
 		Use:                        types.ModuleName,
-		Short:                      "Bond transaction subcommands",
+		Short:                      fmt.Sprintf("%s transactions subcommands", types.ModuleName),
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,

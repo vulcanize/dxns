@@ -1,5 +1,5 @@
 //
-// Copyright 2019 Wireline, Inc.
+// Copyright 2020 Wireline, Inc.
 //
 
 package cli
@@ -15,33 +15,35 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/wirelineio/dxns/x/bond/internal/types"
+	"github.com/wirelineio/dxns/x/auction/internal/types"
 )
 
 // GetQueryCmd returns query commands.
 func GetQueryCmd(storeKey string, cdc *codec.Codec) *cobra.Command {
-	bondQueryCmd := &cobra.Command{
+	auctionQueryCmd := &cobra.Command{
 		Use:                        types.ModuleName,
 		Short:                      fmt.Sprintf("Querying commands for the %s module", types.ModuleName),
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
-	bondQueryCmd.AddCommand(flags.GetCommands(
+	auctionQueryCmd.AddCommand(flags.GetCommands(
 		GetCmdList(storeKey, cdc),
-		GetCmdGetBond(storeKey, cdc),
-		GetCmdListByOwner(storeKey, cdc),
+		GetCmdGetAuction(storeKey, cdc),
+		GetCmdGetBid(storeKey, cdc),
+		GetCmdGetBids(storeKey, cdc),
+		GetCmdListByBidder(storeKey, cdc),
 		GetCmdQueryParams(storeKey, cdc),
 		GetCmdBalance(storeKey, cdc),
 	)...)
-	return bondQueryCmd
+	return auctionQueryCmd
 }
 
-// GetCmdList queries all bonds.
+// GetCmdList queries all auctions.
 func GetCmdList(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
-		Short: "List bonds.",
+		Short: "List auctions.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			viper.Set("trust-node", true)
@@ -60,11 +62,60 @@ func GetCmdList(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	}
 }
 
-// GetCmdGetBond queries a bond.
-func GetCmdGetBond(queryRoute string, cdc *codec.Codec) *cobra.Command {
+// GetCmdGetBid queries an auction bid.
+func GetCmdGetBid(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "get-bid [auction-id] [bidder]",
+		Short: "Get auction bid.",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			viper.Set("trust-node", true)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+
+			id := args[0]
+			bidder := args[1]
+
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/get-bid/%s/%s", queryRoute, id, bidder), nil)
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(string(res))
+
+			return nil
+		},
+	}
+}
+
+// GetCmdGetBids queries all auction bids.
+func GetCmdGetBids(queryRoute string, cdc *codec.Codec) *cobra.Command {
+	return &cobra.Command{
+		Use:   "get-bids [auction-id]",
+		Short: "Get all auction bids.",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			viper.Set("trust-node", true)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+
+			id := args[0]
+
+			res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/get-bids/%s", queryRoute, id), nil)
+			if err != nil {
+				return err
+			}
+
+			fmt.Println(string(res))
+
+			return nil
+		},
+	}
+}
+
+// GetCmdGetAuction queries an auction.
+func GetCmdGetAuction(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "get [ID]",
-		Short: "Get bond.",
+		Short: "Get auction.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			viper.Set("trust-node", true)
@@ -84,11 +135,11 @@ func GetCmdGetBond(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	}
 }
 
-// GetCmdListByOwner queries bonds by owner.
-func GetCmdListByOwner(queryRoute string, cdc *codec.Codec) *cobra.Command {
+// GetCmdListByBidder queries auctions by bidder.
+func GetCmdListByBidder(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "query-by-owner [address]",
-		Short: "Query bonds by owner.",
+		Short: "Query auctions by owner/creator.",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			viper.Set("trust-node", true)
@@ -113,12 +164,12 @@ func GetCmdQueryParams(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "params",
 		Args:  cobra.NoArgs,
-		Short: "Query the current bond parameters information.",
+		Short: "Query the current auction parameters information.",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Query values set as bond parameters.
+			fmt.Sprintf(`Query values set as auction parameters.
 
 Example:
-$ %s query bond params
+$ %s query auction params
 `,
 				version.ClientName,
 			),
@@ -139,11 +190,11 @@ $ %s query bond params
 	}
 }
 
-// GetCmdBalance queries the bond module account balance.
+// GetCmdBalance queries the auction module account balance.
 func GetCmdBalance(queryRoute string, cdc *codec.Codec) *cobra.Command {
 	return &cobra.Command{
 		Use:   "balance",
-		Short: "Get bond module account balance.",
+		Short: "Get auction module account balance.",
 		Args:  cobra.ExactArgs(0),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			viper.Set("trust-node", true)
