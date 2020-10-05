@@ -10,6 +10,7 @@ require (
 	github.com/danieljoos/wincred v1.1.0 // indirect
 	github.com/deckarep/golang-set v1.7.1
 	github.com/ethereum/go-ethereum v1.9.21
+	github.com/ghodss/yaml v1.0.0
 	github.com/gibson042/canonicaljson-go v1.0.3
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/gorilla/mux v1.8.0
@@ -28,7 +29,7 @@ require (
 	github.com/tendermint/tendermint v0.33.7
 	github.com/tendermint/tm-db v0.5.1
 	github.com/tyler-smith/go-bip39 v1.0.2 // indirect
-	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	google.golang.org/genproto v0.0.0-20200815001618-f69a88009b70 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/ini.v1 v1.60.1 // indirect

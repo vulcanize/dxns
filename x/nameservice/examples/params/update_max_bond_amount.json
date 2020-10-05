@@ -1,0 +1,17 @@
+{
+  "title": "Bond Param Change",
+  "description": "Update max bond amount.",
+  "changes": [
+    {
+      "subspace": "bond",
+      "key": "MaxBondAmount",
+      "value": "15000wire"
+    }
+  ],
+  "deposit": [
+    {
+      "denom": "uwire",
+      "amount": "1000000"
+    }
+  ]
+}

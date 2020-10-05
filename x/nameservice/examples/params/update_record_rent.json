@@ -1,0 +1,17 @@
+{
+  "title": "Nameservice Param Change",
+  "description": "Update record rent.",
+  "changes": [
+    {
+      "subspace": "nameservice",
+      "key": "RecordRent",
+      "value": "5wire"
+    }
+  ],
+  "deposit": [
+    {
+      "denom": "uwire",
+      "amount": "1000000"
+    }
+  ]
+}

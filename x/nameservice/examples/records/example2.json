@@ -1,0 +1,12 @@
+{
+  "attr1": "value1",
+  "attr2": "value2",
+  "links": [
+    {
+      "/": "QmSnuWmxptJZdLJpKRarxBMS2Ju2oANVrgbr2xWbie9b2D"
+    },
+    {
+      "/": "QmP8jTG1m9GSDJLCbeWhVSVgEzCPPwXRdCRuJtQ5Tz9Kc9"
+    }
+  ]
+}
