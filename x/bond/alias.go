@@ -16,7 +16,7 @@ const (
 )
 
 var (
-	DefaultParamspace = keeper.DefaultParamspace
+	DefaultParamspace = types.DefaultParamspace
 	NewKeeper         = keeper.NewKeeper
 	NewQuerier        = keeper.NewQuerier
 	ModuleCdc         = types.ModuleCdc

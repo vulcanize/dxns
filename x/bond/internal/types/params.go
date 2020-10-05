@@ -5,18 +5,32 @@
 package types
 
 import (
+	"bytes"
+	"errors"
 	"fmt"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 )
 
-// nolint - Keys for parameter access
+// Default parameter namespace.
+const (
+	DefaultParamspace = ModuleName
+)
+
+// Default parameter values.
+const (
+	DefaultMaxBondAmount string = "1000000stake"
+)
+
+// Keys for parameter access
 var (
 	KeyMaxBondAmount = []byte("MaxBondAmount")
 )
 
-var _ params.ParamSet = (*Params)(nil)
+var _ subspace.ParamSet = &Params{}
 
 // Params defines the high level settings for the bond module.
 type Params struct {
@@ -30,28 +44,61 @@ func NewParams(maxBondAmount string) Params {
 	}
 }
 
+// ParamKeyTable - ParamTable for bond module.
+func ParamKeyTable() subspace.KeyTable {
+	return subspace.NewKeyTable().RegisterParamSet(&Params{})
+}
+
 // ParamSetPairs - implements params.ParamSet
-func (p *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{Key: KeyMaxBondAmount, Value: &p.MaxBondAmount},
+func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
+	return subspace.ParamSetPairs{
+		params.NewParamSetPair(KeyMaxBondAmount, &p.MaxBondAmount, validateMaxBondAmount),
 	}
+}
+
+// Equal returns a boolean determining if two Params types are identical.
+func (p Params) Equal(p2 Params) bool {
+	bz1 := ModuleCdc.MustMarshalBinaryLengthPrefixed(&p)
+	bz2 := ModuleCdc.MustMarshalBinaryLengthPrefixed(&p2)
+	return bytes.Equal(bz1, bz2)
 }
 
 // DefaultParams returns a default set of parameters.
 func DefaultParams() Params {
-	return NewParams("")
+	return Params{
+		MaxBondAmount: DefaultMaxBondAmount,
+	}
 }
 
-// String returns a human readable string representation of the parameters.
+// String implements the stringer interface.
 func (p Params) String() string {
-	return fmt.Sprintf(`Params:
-  Max Bond Amount: %s`, p.MaxBondAmount)
+	var sb strings.Builder
+	sb.WriteString("Params: \n")
+	sb.WriteString(fmt.Sprintf("Max Bond Amount: %s\n", p.MaxBondAmount))
+	return sb.String()
 }
 
-// Validate a set of params.
-func (p Params) Validate() error {
-	_, err := sdk.ParseCoins(p.MaxBondAmount)
+func validateMaxBondAmount(i interface{}) error {
+	v, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("invalid parameter type: %T", i)
+	}
+
+	amount, err := sdk.ParseCoins(v)
 	if err != nil {
+		return err
+	}
+
+	if amount.IsAnyNegative() {
+		return errors.New("max bond amount must be positive")
+	}
+
+	return nil
+}
+
+// Validate checks that the parameters have valid values.
+func (p Params) Validate() error {
+	if err := validateMaxBondAmount(p.MaxBondAmount); err != nil {
 		return err
 	}
 

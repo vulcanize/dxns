@@ -13,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/wirelineio/dxns/x/bond/internal/types"
 )
@@ -38,7 +39,7 @@ type Keeper struct {
 
 	cdc *codec.Codec // The wire codec for binary encoding/decoding.
 
-	paramstore params.Subspace
+	paramSubspace subspace.Subspace
 }
 
 // BondClientKeeper is the subset of functionality exposed to other modules.
@@ -62,7 +63,7 @@ func NewKeeper(accountKeeper auth.AccountKeeper, bankKeeper bank.Keeper, supplyK
 		usageKeepers:  usageKeepers,
 		storeKey:      storeKey,
 		cdc:           cdc,
-		paramstore:    paramstore.WithKeyTable(ParamKeyTable()),
+		paramSubspace: paramstore.WithKeyTable(types.ParamKeyTable()),
 	}
 }
 
@@ -356,7 +357,8 @@ func (k Keeper) TranserCoinsToAccount(ctx sdk.Context, id types.ID, account sdk.
 }
 
 func (k Keeper) getMaxBondAmount(ctx sdk.Context) (sdk.Coins, error) {
-	maxBondAmount, err := sdk.ParseCoins(k.MaxBondAmount(ctx))
+	params := k.GetParams(ctx)
+	maxBondAmount, err := sdk.ParseCoins(params.MaxBondAmount)
 	if err != nil {
 		return nil, err
 	}
