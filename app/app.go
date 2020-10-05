@@ -43,10 +43,10 @@ const appName = "dxns"
 
 var (
 	// DefaultCLIHome sets the default home directories for the application CLI
-	DefaultCLIHome = os.ExpandEnv("$HOME/.dxnscli")
+	DefaultCLIHome = os.ExpandEnv("$HOME/.wire/dxnscli")
 
 	// DefaultNodeHome sets the folder where the application data and configuration will be stored
-	DefaultNodeHome = os.ExpandEnv("$HOME/.dxnsd")
+	DefaultNodeHome = os.ExpandEnv("$HOME/.wire/dxnsd")
 
 	// ModuleBasics defines the module BasicManager is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration

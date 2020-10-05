@@ -59,7 +59,7 @@ func main() {
 
 	rootCmd := &cobra.Command{
 		Use:               "dxnsd",
-		Short:             "Ethapp Chain App Daemon (server)",
+		Short:             "DXNS Chain App Daemon (server)",
 		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
 	}
 	// CLI commands to initialize the chain
