@@ -29,3 +29,14 @@ func MakeCodec(bm module.BasicManager) *codec.Codec {
 
 	return cdc
 }
+
+// MakeCodecLite is the codec used by the lite node.
+func MakeCodecLite() *codec.Codec {
+	var cdc = codec.New()
+
+	ModuleBasics.RegisterCodec(cdc)
+	sdk.RegisterCodec(cdc)
+	codec.RegisterCrypto(cdc)
+
+	return cdc
+}

@@ -18,6 +18,7 @@ all: install
 install: go.sum
 		go install -mod=readonly $(BUILD_FLAGS) ./cmd/dxnsd
 		go install -mod=readonly $(BUILD_FLAGS) ./cmd/dxnscli
+		go install -mod=readonly $(BUILD_FLAGS) ./cmd/dxnsd-lite
 
 go.sum: go.mod
 		@echo "--> Ensure dependencies have not been modified"

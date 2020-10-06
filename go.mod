@@ -18,12 +18,16 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/ipfs/go-ipld-cbor v0.0.4
 	github.com/keybase/go-keychain v0.0.0-20200502122510-cda31fe0c86d // indirect
+	github.com/machinebox/graphql v0.2.2
 	github.com/magiconair/properties v1.8.2 // indirect
+	github.com/matryer/is v1.4.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/multiformats/go-multihash v0.0.14
 	github.com/pelletier/go-toml v1.8.0 // indirect
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/common v0.13.0 // indirect
 	github.com/rs/cors v1.7.0
+	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.0.0

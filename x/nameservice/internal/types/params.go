@@ -31,7 +31,7 @@ const (
 	DefaultAuthorityExpiryTime  time.Duration = time.Hour * 24 * 365
 	DefaultAuthorityGracePeriod time.Duration = time.Hour * 24 * 2
 
-	DefaultAuthorityAuctionEnabled               = true
+	DefaultAuthorityAuctionEnabled               = false
 	DefaultCommitsDuration         time.Duration = time.Hour * 24
 	DefaultRevealsDuration         time.Duration = time.Hour * 24
 	DefaultCommitFee               string        = "1000000uwire"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-LOG=/tmp/wns.log
+LOG=/tmp/dxns.log
 API_ENDPOINT=http://localhost:9473/graphql
 GQL_PLAYGROUND_API_BASE=""
 
@@ -33,7 +33,7 @@ function start_server ()
   rm -f ${LOG}
 
   # Start the server.
-  nohup wnsd start --gql-server --gql-playground --gql-playground-api-base "${GQL_PLAYGROUND_API_BASE}" --log-file "${LOG}" > ${LOG} 2>&1 &
+  nohup dxnsd start --gql-server --gql-playground --gql-playground-api-base "${GQL_PLAYGROUND_API_BASE}" --log-file "${LOG}" > ${LOG} 2>&1 &
 
   if [[ ! -z "${TAIL_LOGS}" ]]; then
     log
@@ -43,7 +43,7 @@ function start_server ()
 function stop_server ()
 {
   set -x
-  killall wnsd
+  killall dxnsd
 }
 
 function log ()
