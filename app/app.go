@@ -12,8 +12,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/crisis"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
+	"github.com/cosmos/cosmos-sdk/x/evidence"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
@@ -32,6 +35,10 @@ import (
 	"github.com/wirelineio/dxns/x/auction"
 	"github.com/wirelineio/dxns/x/bond"
 	ns "github.com/wirelineio/dxns/x/nameservice"
+
+	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
+	"github.com/cosmos/cosmos-sdk/x/upgrade"
+	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 )
 
 func init() {
@@ -61,8 +68,14 @@ var (
 		staking.AppModuleBasic{},
 		mint.AppModuleBasic{},
 		distr.AppModuleBasic{},
+		gov.NewAppModuleBasic(
+			paramsclient.ProposalHandler, distr.ProposalHandler, upgradeclient.ProposalHandler,
+		),
 		params.AppModuleBasic{},
+		crisis.AppModuleBasic{},
 		slashing.AppModuleBasic{},
+		evidence.AppModuleBasic{},
+		upgrade.AppModuleBasic{},
 		evm.AppModuleBasic{},
 
 		bond.AppModule{},
@@ -77,6 +90,7 @@ var (
 		mint.ModuleName:                      {supply.Minter},
 		staking.BondedPoolName:               {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName:            {supply.Burner, supply.Staking},
+		gov.ModuleName:                       {supply.Burner},
 		bond.ModuleName:                      nil,
 		auction.ModuleName:                   nil,
 		auction.AuctionBurnModuleAccountName: nil,
@@ -86,6 +100,7 @@ var (
 
 	// module accounts that are allowed to receive tokens
 	allowedReceivingModAcc = map[string]bool{
+		// TODO(ashwin): Update?
 		distr.ModuleName: true,
 	}
 )
@@ -114,9 +129,14 @@ type NewApp struct {
 	supplyKeeper   supply.Keeper
 	stakingKeeper  staking.Keeper
 	slashingKeeper slashing.Keeper
+	govKeeper      gov.Keeper
+	crisisKeeper   crisis.Keeper
+	upgradeKeeper  upgrade.Keeper
+
 	MintKeeper     mint.Keeper
 	DistrKeeper    distr.Keeper
 	paramsKeeper   params.Keeper
+	evidenceKeeper evidence.Keeper
 	EvmKeeper      evm.Keeper
 
 	recordKeeper  ns.RecordKeeper
@@ -138,6 +158,7 @@ func NewAppInit(
 	db dbm.DB,
 	traceStore io.Writer,
 	loadLatest bool,
+	skipUpgradeHeights map[int64]bool,
 	invCheckPeriod uint,
 	baseAppOptions ...func(*bam.BaseApp),
 ) *NewApp {
@@ -151,15 +172,15 @@ func NewAppInit(
 
 	keys := sdk.NewKVStoreKeys(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
-		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey,
-		params.StoreKey,
+		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey, gov.StoreKey,
+		params.StoreKey, upgrade.StoreKey, evidence.StoreKey,
 		evm.StoreKey,
 		bond.StoreKey,
 		auction.StoreKey,
 		ns.StoreKey,
 	)
 
-	tKeys := sdk.NewTransientStoreKeys(params.TStoreKey)
+	tKeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
 	app := &NewApp{
 		BaseApp:        bApp,
@@ -178,6 +199,9 @@ func NewAppInit(
 	app.subspaces[mint.ModuleName] = app.paramsKeeper.Subspace(mint.DefaultParamspace)
 	app.subspaces[distr.ModuleName] = app.paramsKeeper.Subspace(distr.DefaultParamspace)
 	app.subspaces[slashing.ModuleName] = app.paramsKeeper.Subspace(slashing.DefaultParamspace)
+	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
+	app.subspaces[crisis.ModuleName] = app.paramsKeeper.Subspace(crisis.DefaultParamspace)
+	app.subspaces[evidence.ModuleName] = app.paramsKeeper.Subspace(evidence.DefaultParamspace)
 	app.subspaces[evm.ModuleName] = app.paramsKeeper.Subspace(evm.DefaultParamspace)
 	app.subspaces[bond.ModuleName] = app.paramsKeeper.Subspace(bond.DefaultParamspace)
 	app.subspaces[auction.ModuleName] = app.paramsKeeper.Subspace(auction.DefaultParamspace)
@@ -193,9 +217,11 @@ func NewAppInit(
 	app.supplyKeeper = supply.NewKeeper(
 		cdc, keys[supply.StoreKey], app.accountKeeper, app.bankKeeper, maccPerms,
 	)
+
 	stakingKeeper := staking.NewKeeper(
 		cdc, keys[staking.StoreKey], app.supplyKeeper, app.subspaces[staking.ModuleName],
 	)
+
 	app.MintKeeper = mint.NewKeeper(
 		cdc, keys[mint.StoreKey], app.subspaces[mint.ModuleName], &stakingKeeper,
 		app.supplyKeeper, auth.FeeCollectorName,
@@ -207,6 +233,12 @@ func NewAppInit(
 	app.slashingKeeper = slashing.NewKeeper(
 		cdc, keys[slashing.StoreKey], &stakingKeeper, app.subspaces[slashing.ModuleName],
 	)
+
+	app.crisisKeeper = crisis.NewKeeper(
+		app.subspaces[crisis.ModuleName], invCheckPeriod, app.supplyKeeper, auth.FeeCollectorName,
+	)
+
+	app.upgradeKeeper = upgrade.NewKeeper(skipUpgradeHeights, keys[upgrade.StoreKey], app.cdc)
 
 	app.EvmKeeper = evm.NewKeeper(
 		app.cdc, keys[evm.StoreKey], app.subspaces[evm.ModuleName], app.accountKeeper,
@@ -250,6 +282,26 @@ func NewAppInit(
 		app.subspaces[ns.ModuleName],
 	)
 
+	// create evidence keeper with router
+	evidenceKeeper := evidence.NewKeeper(
+		cdc, keys[evidence.StoreKey], app.subspaces[evidence.ModuleName], &app.stakingKeeper, app.slashingKeeper,
+	)
+	evidenceRouter := evidence.NewRouter()
+	// TODO: Register evidence routes.
+	evidenceKeeper.SetRouter(evidenceRouter)
+	app.evidenceKeeper = *evidenceKeeper
+
+	govRouter := gov.NewRouter()
+	govRouter.AddRoute(gov.RouterKey, gov.ProposalHandler).
+		AddRoute(params.RouterKey, params.NewParamChangeProposalHandler(app.paramsKeeper)).
+		AddRoute(distr.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
+		AddRoute(upgrade.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.upgradeKeeper))
+
+	app.govKeeper = gov.NewKeeper(
+		cdc, keys[gov.StoreKey], app.subspaces[gov.ModuleName], app.supplyKeeper,
+		&stakingKeeper, govRouter,
+	)
+
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
 	app.stakingKeeper = *stakingKeeper.SetHooks(
@@ -262,11 +314,14 @@ func NewAppInit(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx),
 		auth.NewAppModule(app.accountKeeper),
 		bank.NewAppModule(app.bankKeeper, app.accountKeeper),
+		crisis.NewAppModule(&app.crisisKeeper),
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
+		gov.NewAppModule(app.govKeeper, app.accountKeeper, app.supplyKeeper),
 		mint.NewAppModule(app.MintKeeper),
 		slashing.NewAppModule(app.slashingKeeper, app.accountKeeper, app.stakingKeeper),
 		distr.NewAppModule(app.DistrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
+		evidence.NewAppModule(app.evidenceKeeper),
 		evm.NewAppModule(app.EvmKeeper, app.accountKeeper),
 		bond.NewAppModule(app.bondKeeper),
 		auction.NewAppModule(app.auctionKeeper),
@@ -278,22 +333,24 @@ func NewAppInit(
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
 		evm.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
+		evidence.ModuleName,
 	)
 
 	// TODO(ashwin): Include staking, gov and crisis modules.
 	app.mm.SetOrderEndBlockers(
-		evm.ModuleName, staking.ModuleName, auction.ModuleName, ns.ModuleName,
+		evm.ModuleName, crisis.ModuleName, gov.ModuleName, staking.ModuleName, auction.ModuleName, ns.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
 		auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
-		slashing.ModuleName, mint.ModuleName, supply.ModuleName,
-		genutil.ModuleName, evm.ModuleName,
+		slashing.ModuleName, gov.ModuleName, mint.ModuleName, supply.ModuleName,
+		crisis.ModuleName, genutil.ModuleName, evidence.ModuleName, evm.ModuleName,
 		bond.ModuleName, auction.ModuleName, ns.ModuleName,
 	)
 
+	app.mm.RegisterInvariants(&app.crisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
 
 	// initialize stores

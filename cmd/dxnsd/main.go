@@ -98,6 +98,7 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 		db,
 		traceStore,
 		true,
+		map[int64]bool{},
 		0,
 		baseapp.SetPruning(storetypes.NewPruningOptionsFromString(viper.GetString("pruning"))),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
@@ -109,7 +110,7 @@ func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 
-	dxnsChain := app.NewAppInit(logger, db, traceStore, true, 0)
+	dxnsChain := app.NewAppInit(logger, db, traceStore, true, map[int64]bool{}, 0)
 
 	if height != -1 {
 		err := dxnsChain.LoadHeight(height)
