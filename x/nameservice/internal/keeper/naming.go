@@ -459,6 +459,8 @@ func (k RecordKeeper) GetAuctionToAuthorityMapping(ctx sdk.Context, auctionID au
 }
 
 func (k Keeper) createAuthority(ctx sdk.Context, name string, owner sdk.AccAddress, isRoot bool) error {
+	moduleParams := k.GetParams(ctx)
+
 	// Authorities can be re-registered if they have expired.
 	if k.HasNameAuthority(ctx, name) {
 		authority := k.GetNameAuthority(ctx, name)
@@ -486,11 +488,11 @@ func (k Keeper) createAuthority(ctx sdk.Context, name string, owner sdk.AccAddre
 		AuctionID: auction.ID(""),
 
 		// Grace period to set bond (assume no auction for now).
-		ExpiryTime: ctx.BlockTime().Add(k.AuthorityGracePeriod(ctx)),
+		ExpiryTime: ctx.BlockTime().Add(moduleParams.AuthorityGracePeriod),
 	}
 
 	// Create auction if root authority and name auctions are enabled.
-	if isRoot && k.AuthorityAuctionsEnabled(ctx) {
+	if isRoot && moduleParams.AuthorityAuctionEnabled {
 		// If auctions are enabled, clear out owner fields. They will be set after a winner is picked.
 		authority.OwnerAddress = ""
 		authority.OwnerPublicKey = ""
@@ -501,24 +503,24 @@ func (k Keeper) createAuthority(ctx sdk.Context, name string, owner sdk.AccAddre
 			authority.BondID = ""
 		}
 
-		commitFee, err := sdk.ParseCoin(k.AuthorityAuctionCommitFee(ctx))
+		commitFee, err := sdk.ParseCoin(moduleParams.CommitFee)
 		if err != nil {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Invalid name auction commit fee.")
 		}
 
-		revealFee, err := sdk.ParseCoin(k.AuthorityAuctionRevealFee(ctx))
+		revealFee, err := sdk.ParseCoin(moduleParams.RevealFee)
 		if err != nil {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Invalid name auction reveal fee.")
 		}
 
-		minimumBid, err := sdk.ParseCoin(k.AuthorityAuctionMinimumBid(ctx))
+		minimumBid, err := sdk.ParseCoin(moduleParams.MinimumBid)
 		if err != nil {
 			return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Invalid name auction minimum bid.")
 		}
 
 		params := auction.Params{
-			CommitsDuration: k.AuthorityAuctionCommitsDuration(ctx),
-			RevealsDuration: k.AuthorityAuctionRevealsDuration(ctx),
+			CommitsDuration: moduleParams.CommitsDuration,
+			RevealsDuration: moduleParams.RevealsDuration,
 			CommitFee:       commitFee,
 			RevealFee:       revealFee,
 			MinimumBid:      minimumBid,
@@ -538,7 +540,7 @@ func (k Keeper) createAuthority(ctx sdk.Context, name string, owner sdk.AccAddre
 
 		authority.Status = types.AuthorityUnderAuction
 		authority.AuctionID = auction.ID
-		authority.ExpiryTime = auction.RevealsEndTime.Add(k.AuthorityGracePeriod(ctx))
+		authority.ExpiryTime = auction.RevealsEndTime.Add(moduleParams.AuthorityGracePeriod)
 	}
 
 	k.SetNameAuthority(ctx, name, authority)
@@ -790,7 +792,9 @@ func (k Keeper) GetAuthorityExpiryQueue(ctx sdk.Context) (expired map[string][]s
 func (k Keeper) TryTakeAuthorityRent(ctx sdk.Context, name string, authority types.NameAuthority) {
 	ctx.Logger().Info(fmt.Sprintf("Trying to take rent for authority: %s", name))
 
-	rent, err := sdk.ParseCoins(k.AuthorityRent(ctx))
+	params := k.GetParams(ctx)
+
+	rent, err := sdk.ParseCoins(params.AuthorityRent)
 	if err != nil {
 		panic("Invalid authority rent.")
 	}
@@ -809,7 +813,7 @@ func (k Keeper) TryTakeAuthorityRent(ctx sdk.Context, name string, authority typ
 
 	// Delete old expiry queue entry, create new one.
 	k.DeleteAuthorityExpiryQueue(ctx, name, authority)
-	authority.ExpiryTime = ctx.BlockTime().Add(k.AuthorityRentDuration(ctx))
+	authority.ExpiryTime = ctx.BlockTime().Add(params.AuthorityRentDuration)
 	k.InsertAuthorityExpiryQueue(ctx, name, authority.ExpiryTime)
 
 	// Save authority.

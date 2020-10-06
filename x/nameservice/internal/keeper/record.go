@@ -84,7 +84,9 @@ func (k Keeper) ProcessRenewRecord(ctx sdk.Context, msg types.MsgRenewRecord) (*
 }
 
 func (k Keeper) processRecord(ctx sdk.Context, record *types.Record, isRenewal bool) error {
-	rent, err := sdk.ParseCoins(k.RecordRent(ctx))
+	params := k.GetParams(ctx)
+
+	rent, err := sdk.ParseCoins(params.RecordRent)
 	if err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "Invalid record rent.")
 	}
@@ -95,7 +97,7 @@ func (k Keeper) processRecord(ctx sdk.Context, record *types.Record, isRenewal b
 	}
 
 	record.CreateTime = ctx.BlockHeader().Time
-	record.ExpiryTime = ctx.BlockHeader().Time.Add(k.RecordRentDuration(ctx))
+	record.ExpiryTime = ctx.BlockHeader().Time.Add(params.RecordRentDuration)
 	record.Deleted = false
 
 	k.PutRecord(ctx, *record)

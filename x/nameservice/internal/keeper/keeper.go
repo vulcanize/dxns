@@ -12,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/tendermint/go-amino"
 	"github.com/wirelineio/dxns/x/auction"
@@ -68,7 +69,7 @@ type Keeper struct {
 
 	cdc *codec.Codec // The wire codec for binary encoding/decoding.
 
-	paramstore params.Subspace
+	paramSubspace subspace.Subspace
 }
 
 // NewKeeper creates new instances of the nameservice Keeper
@@ -81,7 +82,7 @@ func NewKeeper(accountKeeper auth.AccountKeeper, supplyKeeper supply.Keeper, rec
 		auctionKeeper: auctionKeeper,
 		storeKey:      storeKey,
 		cdc:           cdc,
-		paramstore:    paramstore.WithKeyTable(ParamKeyTable()),
+		paramSubspace: paramstore.WithKeyTable(types.ParamKeyTable()),
 	}
 }
 
@@ -369,7 +370,9 @@ func (k Keeper) GetRecordExpiryQueue(ctx sdk.Context) (expired map[string][]type
 
 // TryTakeRecordRent tries to take rent from the record bond.
 func (k Keeper) TryTakeRecordRent(ctx sdk.Context, record types.Record) {
-	rent, err := sdk.ParseCoins(k.RecordRent(ctx))
+	params := k.GetParams(ctx)
+
+	rent, err := sdk.ParseCoins(params.RecordRent)
 	if err != nil {
 		panic("Invalid record rent.")
 	}
@@ -386,7 +389,7 @@ func (k Keeper) TryTakeRecordRent(ctx sdk.Context, record types.Record) {
 
 	// Delete old expiry queue entry, create new one.
 	k.DeleteRecordExpiryQueue(ctx, record)
-	record.ExpiryTime = ctx.BlockHeader().Time.Add(k.RecordRentDuration(ctx))
+	record.ExpiryTime = ctx.BlockHeader().Time.Add(params.RecordRentDuration)
 	k.InsertRecordExpiryQueue(ctx, record)
 
 	// Save record.

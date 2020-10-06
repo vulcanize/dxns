@@ -18,7 +18,7 @@ const (
 )
 
 var (
-	DefaultParamspace = keeper.DefaultParamspace
+	DefaultParamspace = types.DefaultParamspace
 	NewKeeper         = keeper.NewKeeper
 	NewRecordKeeper   = keeper.NewRecordKeeper
 	NewQuerier        = keeper.NewQuerier

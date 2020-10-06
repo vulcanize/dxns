@@ -5,13 +5,21 @@
 package types
 
 import (
+	"bytes"
 	"fmt"
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 )
 
-// Nameservice params default values.
+// Default parameter namespace.
+const (
+	DefaultParamspace = ModuleName
+)
+
+// Default parameter values.
 const (
 	// DefaultRecordRent is the default record rent for 1 time period (see expiry time).
 	DefaultRecordRent string = "1000000uwire"
@@ -23,15 +31,15 @@ const (
 	DefaultAuthorityExpiryTime  time.Duration = time.Hour * 24 * 365
 	DefaultAuthorityGracePeriod time.Duration = time.Hour * 24 * 2
 
-	DefaultAuthorityAuctionsEnabled               = true
-	DefaultCommitsDuration          time.Duration = time.Hour * 24
-	DefaultRevealsDuration          time.Duration = time.Hour * 24
-	DefaultCommitFee                string        = "1000000uwire"
-	DefaultRevealFee                string        = "1000000uwire"
-	DefaultMinimumBid               string        = "5000000uwire"
+	DefaultAuthorityAuctionEnabled               = true
+	DefaultCommitsDuration         time.Duration = time.Hour * 24
+	DefaultRevealsDuration         time.Duration = time.Hour * 24
+	DefaultCommitFee               string        = "1000000uwire"
+	DefaultRevealFee               string        = "1000000uwire"
+	DefaultMinimumBid              string        = "5000000uwire"
 )
 
-// nolint - Keys for parameter access
+// Keys for parameter access
 var (
 	KeyRecordRent         = []byte("RecordRent")
 	KeyRecordRentDuration = []byte("RecordRentDuration")
@@ -40,17 +48,17 @@ var (
 	KeyAuthorityRentDuration = []byte("AuthorityRentDuration")
 	KeyAuthorityGracePeriod  = []byte("AuthorityGracePeriod")
 
-	KeyAuthorityAuctions = []byte("AuthorityAuctionEnabled")
-	KeyCommitsDuration   = []byte("AuthorityAuctionCommitsDuration")
-	KeyRevealsDuration   = []byte("AuthorityAuctionRevealsDuration")
-	KeyCommitFee         = []byte("AuthorityAuctionCommitFee")
-	KeyRevealFee         = []byte("AuthorityAuctionRevealFee")
-	KeyMinimumBid        = []byte("AuthorityAuctionMinimumBid")
+	KeyAuthorityAuctionEnabled = []byte("AuthorityAuctionEnabled")
+	KeyCommitsDuration         = []byte("AuthorityAuctionCommitsDuration")
+	KeyRevealsDuration         = []byte("AuthorityAuctionRevealsDuration")
+	KeyCommitFee               = []byte("AuthorityAuctionCommitFee")
+	KeyRevealFee               = []byte("AuthorityAuctionRevealFee")
+	KeyMinimumBid              = []byte("AuthorityAuctionMinimumBid")
 )
 
-var _ params.ParamSet = (*Params)(nil)
+var _ subspace.ParamSet = &Params{}
 
-// Params defines the high level settings for nameservice
+// Params defines the high level settings for the nameservice module.
 type Params struct {
 	RecordRent         string        `json:"record_rent" yaml:"record_rent"`
 	RecordRentDuration time.Duration `json:"record_rent_duration" yaml:"record_rent_duration"`
@@ -60,18 +68,18 @@ type Params struct {
 	AuthorityGracePeriod  time.Duration `json:"authority_grace_period" yaml:"authority_grace_period"`
 
 	// Are name auctions enabled?
-	AuthorityAuctions bool          `json:"authority_auctions" yaml:"name_auctions"`
-	CommitsDuration   time.Duration `json:"authority_auction_commits_duration" yaml:"authority_auction_commits_duration"`
-	RevealsDuration   time.Duration `json:"authority_auction_reveals_duration" yaml:"authority_auction_reveals_duration"`
-	CommitFee         string        `json:"authority_auction_commit_fee" yaml:"authority_auction_commit_fee"`
-	RevealFee         string        `json:"authority_auction_reveal_fee" yaml:"authority_auction_reveal_fee"`
-	MinimumBid        string        `json:"authority_auction_minimum_bid" yaml:"authority_auction_minimum_bid"`
+	AuthorityAuctionEnabled bool          `json:"authority_auction_enabled" yaml:"authority_auction_enabled"`
+	CommitsDuration         time.Duration `json:"authority_auction_commits_duration" yaml:"authority_auction_commits_duration"`
+	RevealsDuration         time.Duration `json:"authority_auction_reveals_duration" yaml:"authority_auction_reveals_duration"`
+	CommitFee               string        `json:"authority_auction_commit_fee" yaml:"authority_auction_commit_fee"`
+	RevealFee               string        `json:"authority_auction_reveal_fee" yaml:"authority_auction_reveal_fee"`
+	MinimumBid              string        `json:"authority_auction_minimum_bid" yaml:"authority_auction_minimum_bid"`
 }
 
 // NewParams creates a new Params instance
 func NewParams(recordRent string, recordRentDuration time.Duration,
 	authorityRent string, authorityRentDuration time.Duration, authorityGracePeriod time.Duration,
-	authorityAuctions bool, commitsDuration time.Duration, revealsDuration time.Duration,
+	authorityAuctionEnabled bool, commitsDuration time.Duration, revealsDuration time.Duration,
 	commitFee string, revealFee string, minimumBid string) Params {
 
 	return Params{
@@ -82,39 +90,51 @@ func NewParams(recordRent string, recordRentDuration time.Duration,
 		AuthorityRentDuration: authorityRentDuration,
 		AuthorityGracePeriod:  authorityGracePeriod,
 
-		AuthorityAuctions: authorityAuctions,
-		CommitsDuration:   commitsDuration,
-		RevealsDuration:   revealsDuration,
-		CommitFee:         commitFee,
-		RevealFee:         revealFee,
-		MinimumBid:        minimumBid,
+		AuthorityAuctionEnabled: authorityAuctionEnabled,
+		CommitsDuration:         commitsDuration,
+		RevealsDuration:         revealsDuration,
+		CommitFee:               commitFee,
+		RevealFee:               revealFee,
+		MinimumBid:              minimumBid,
 	}
 }
 
+// ParamKeyTable - ParamTable for nameservice module.
+func ParamKeyTable() subspace.KeyTable {
+	return subspace.NewKeyTable().RegisterParamSet(&Params{})
+}
+
 // ParamSetPairs - implements params.ParamSet
-func (p *Params) ParamSetPairs() params.ParamSetPairs {
-	return params.ParamSetPairs{
-		{Key: KeyRecordRent, Value: &p.RecordRent},
-		{Key: KeyRecordRentDuration, Value: &p.RecordRentDuration},
+func (p *Params) ParamSetPairs() subspace.ParamSetPairs {
+	return subspace.ParamSetPairs{
+		params.NewParamSetPair(KeyRecordRent, &p.RecordRent, validateRecordRent),
+		params.NewParamSetPair(KeyRecordRentDuration, &p.RecordRentDuration, validateRecordRentDuration),
 
-		{Key: KeyAuthorityRent, Value: &p.AuthorityRent},
-		{Key: KeyAuthorityRentDuration, Value: &p.AuthorityRentDuration},
-		{Key: KeyAuthorityGracePeriod, Value: &p.AuthorityGracePeriod},
+		params.NewParamSetPair(KeyAuthorityRent, &p.AuthorityRent, validateAuthorityRent),
+		params.NewParamSetPair(KeyAuthorityRentDuration, &p.AuthorityRentDuration, validateAuthorityRentDuration),
+		params.NewParamSetPair(KeyAuthorityGracePeriod, &p.AuthorityGracePeriod, validateAuthorityGracePeriod),
 
-		{Key: KeyAuthorityAuctions, Value: &p.AuthorityAuctions},
-		{Key: KeyCommitsDuration, Value: &p.CommitsDuration},
-		{Key: KeyRevealsDuration, Value: &p.RevealsDuration},
-		{Key: KeyCommitFee, Value: &p.CommitFee},
-		{Key: KeyRevealFee, Value: &p.RevealFee},
-		{Key: KeyMinimumBid, Value: &p.MinimumBid},
+		params.NewParamSetPair(KeyAuthorityAuctionEnabled, &p.AuthorityAuctionEnabled, validateAuthorityAuctionEnabled),
+		params.NewParamSetPair(KeyCommitsDuration, &p.CommitsDuration, validateCommitsDuration),
+		params.NewParamSetPair(KeyRevealsDuration, &p.RevealsDuration, validateRevealsDuration),
+		params.NewParamSetPair(KeyCommitFee, &p.CommitFee, validateCommitFee),
+		params.NewParamSetPair(KeyRevealFee, &p.RevealFee, validateRevealFee),
+		params.NewParamSetPair(KeyMinimumBid, &p.MinimumBid, validateMinimumBid),
 	}
+}
+
+// Equal returns a boolean determining if two Params types are identical.
+func (p Params) Equal(p2 Params) bool {
+	bz1 := ModuleCdc.MustMarshalBinaryLengthPrefixed(&p)
+	bz2 := ModuleCdc.MustMarshalBinaryLengthPrefixed(&p2)
+	return bytes.Equal(bz1, bz2)
 }
 
 // DefaultParams returns a default set of parameters.
 func DefaultParams() Params {
 	return NewParams(DefaultRecordRent, DefaultRecordExpiryTime,
 		DefaultAuthorityRent, DefaultAuthorityExpiryTime, DefaultAuthorityGracePeriod,
-		DefaultAuthorityAuctionsEnabled, DefaultCommitsDuration, DefaultRevealsDuration,
+		DefaultAuthorityAuctionEnabled, DefaultCommitsDuration, DefaultRevealsDuration,
 		DefaultCommitFee, DefaultRevealFee, DefaultMinimumBid,
 	)
 }
@@ -137,49 +157,137 @@ func (p Params) String() string {
   Authority Auction Minimum Bid      : %v`,
 		p.RecordRent, p.RecordRentDuration,
 		p.AuthorityRent, p.AuthorityRentDuration, p.AuthorityGracePeriod,
-		p.AuthorityAuctions, p.CommitsDuration, p.RevealsDuration, p.CommitFee, p.RevealFee, p.MinimumBid)
+		p.AuthorityAuctionEnabled, p.CommitsDuration, p.RevealsDuration, p.CommitFee, p.RevealFee, p.MinimumBid)
+}
+
+func validateAmount(name string, i interface{}) error {
+	v, ok := i.(string)
+	if !ok {
+		return fmt.Errorf("%s invalid parameter type: %T", name, i)
+	}
+
+	if v == "" {
+		return fmt.Errorf("%s can't be an empty string", name)
+	}
+
+	amount, err := sdk.ParseCoins(v)
+	if err != nil {
+		return err
+	}
+
+	if amount.IsAnyNegative() {
+		return fmt.Errorf("%s can't be negative", name)
+	}
+
+	return nil
+}
+
+func validateDuration(name string, i interface{}) error {
+	v, ok := i.(time.Duration)
+	if !ok {
+		return fmt.Errorf("%s invalid parameter type: %T", name, i)
+	}
+
+	if v <= 0 {
+		return fmt.Errorf("%s must be a positive integer", name)
+	}
+
+	return nil
+}
+
+func validateRecordRent(i interface{}) error {
+	return validateAmount("RecordRent", i)
+}
+
+func validateRecordRentDuration(i interface{}) error {
+	return validateDuration("RecordRentDuration", i)
+}
+
+func validateAuthorityRent(i interface{}) error {
+	return validateAmount("AuthorityRent", i)
+}
+
+func validateAuthorityRentDuration(i interface{}) error {
+	return validateDuration("AuthorityRentDuration", i)
+}
+
+func validateAuthorityGracePeriod(i interface{}) error {
+	return validateDuration("AuthorityGracePeriod", i)
+}
+
+func validateAuthorityAuctionEnabled(i interface{}) error {
+	_, ok := i.(bool)
+	if !ok {
+		return fmt.Errorf("%s invalid parameter type: %T", "AuthorityAuctionEnabled", i)
+	}
+
+	return nil
+}
+
+func validateCommitsDuration(i interface{}) error {
+	return validateDuration("CommitsDuration", i)
+}
+
+func validateRevealsDuration(i interface{}) error {
+	return validateDuration("RevealsDuration", i)
+}
+
+func validateCommitFee(i interface{}) error {
+	return validateAmount("CommitFee", i)
+}
+
+func validateRevealFee(i interface{}) error {
+	return validateAmount("RevealFee", i)
+}
+
+func validateMinimumBid(i interface{}) error {
+	return validateAmount("MinimumBid", i)
 }
 
 // Validate a set of params.
 func (p Params) Validate() error {
-	if p.RecordRent == "" {
-		return fmt.Errorf("nameservice parameter RecordRent can't be an empty string")
+	if err := validateRecordRent(p.RecordRent); err != nil {
+		return err
 	}
 
-	if p.RecordRentDuration <= 0 {
-		return fmt.Errorf("nameservice parameter RecordRentDuration must be a positive integer")
+	if err := validateRecordRentDuration(p.RecordRentDuration); err != nil {
+		return err
 	}
 
-	if p.AuthorityRent == "" {
-		return fmt.Errorf("nameservice parameter AuthorityRent can't be an empty string")
+	if err := validateAuthorityRent(p.AuthorityRent); err != nil {
+		return err
 	}
 
-	if p.AuthorityRentDuration <= 0 {
-		return fmt.Errorf("nameservice parameter AuthorityRentDuration must be a positive integer")
+	if err := validateAuthorityRentDuration(p.AuthorityRentDuration); err != nil {
+		return err
 	}
 
-	if p.AuthorityGracePeriod <= 0 {
-		return fmt.Errorf("nameservice parameter AuthorityGracePeriod must be a positive integer")
+	if err := validateAuthorityGracePeriod(p.AuthorityGracePeriod); err != nil {
+		return err
 	}
 
-	if p.CommitsDuration <= 0 {
-		return fmt.Errorf("nameservice parameter CommitsDuration must be a positive integer")
+	if err := validateAuthorityAuctionEnabled(p.AuthorityAuctionEnabled); err != nil {
+		return err
 	}
 
-	if p.RevealsDuration <= 0 {
-		return fmt.Errorf("nameservice parameter RevealsDuration must be a positive integer")
+	if err := validateCommitsDuration(p.CommitsDuration); err != nil {
+		return err
 	}
 
-	if p.CommitFee == "" {
-		return fmt.Errorf("nameservice parameter CommitFee can't be an empty string")
+	if err := validateRevealsDuration(p.RevealsDuration); err != nil {
+		return err
 	}
 
-	if p.RevealFee == "" {
-		return fmt.Errorf("nameservice parameter RevealFee can't be an empty string")
+	if err := validateCommitFee(p.CommitFee); err != nil {
+		return err
 	}
 
-	if p.MinimumBid == "" {
-		return fmt.Errorf("nameservice parameter MinimumBid can't be an empty string")
+	if err := validateRevealFee(p.RevealFee); err != nil {
+		return err
+	}
+
+	if err := validateMinimumBid(p.MinimumBid); err != nil {
+		return err
 	}
 
 	return nil
