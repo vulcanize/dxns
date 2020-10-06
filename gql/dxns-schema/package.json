@@ -1,0 +1,18 @@
+{
+  "name": "@wirelineio/dxns-schema",
+  "version": "0.2.0",
+  "description": "WNS schema",
+  "license": "GPL-3.0",
+  "files": [
+    "gql"
+  ],
+  "scripts": {
+    "test": "jest --passWithNoTests"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1"
+  }
+}

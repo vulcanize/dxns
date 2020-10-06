@@ -3,6 +3,7 @@ module github.com/wirelineio/dxns
 go 1.14
 
 require (
+	github.com/99designs/gqlgen v0.13.0
 	github.com/ChainSafe/go-schnorrkel v0.0.0-20200626160457-b38283118816 // indirect
 	github.com/cosmos/cosmos-sdk v0.39.1
 	github.com/cosmos/ethermint v0.2.0-rc6
@@ -12,6 +13,7 @@ require (
 	github.com/ethereum/go-ethereum v1.9.21
 	github.com/ghodss/yaml v1.0.0
 	github.com/gibson042/canonicaljson-go v1.0.3
+	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/golang/mock v1.4.3 // indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/ipfs/go-ipld-cbor v0.0.4
@@ -21,6 +23,7 @@ require (
 	github.com/multiformats/go-multihash v0.0.14
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/prometheus/common v0.13.0 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.0.0
@@ -29,6 +32,7 @@ require (
 	github.com/tendermint/tendermint v0.33.7
 	github.com/tendermint/tm-db v0.5.1
 	github.com/tyler-smith/go-bip39 v1.0.2 // indirect
+	github.com/vektah/gqlparser/v2 v2.1.0
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	google.golang.org/genproto v0.0.0-20200815001618-f69a88009b70 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect

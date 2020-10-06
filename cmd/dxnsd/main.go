@@ -82,10 +82,16 @@ func main() {
 	// Tendermint node base commands
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
+	// Add flags for GQL server.
+	rootCmd.PersistentFlags().Bool("gql-server", false, "Start GQL server.")
+	rootCmd.PersistentFlags().Bool("gql-playground", false, "Enable GQL playground.")
+	rootCmd.PersistentFlags().String("gql-playground-api-base", "", "GQL API base path to use in GQL playground.")
+	rootCmd.PersistentFlags().String("gql-port", "9473", "Port to use for the GQL server.")
+	rootCmd.PersistentFlags().String("log-file", "", "File to tail for GQL 'getLogs' API.")
+
 	// prepare and add flags
-	executor := cli.PrepareBaseCmd(rootCmd, "EM", app.DefaultNodeHome)
-	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
-		0, "Assert registered invariants every N blocks")
+	executor := cli.PrepareBaseCmd(rootCmd, "DXNS", app.DefaultNodeHome)
+	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod, 0, "Assert registered invariants every N blocks")
 	err := executor.Execute()
 	if err != nil {
 		panic(err)

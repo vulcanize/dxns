@@ -32,6 +32,7 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
+	"github.com/wirelineio/dxns/gql"
 	"github.com/wirelineio/dxns/x/auction"
 	"github.com/wirelineio/dxns/x/bond"
 	ns "github.com/wirelineio/dxns/x/nameservice"
@@ -369,6 +370,9 @@ func NewAppInit(
 			tmos.Exit(err.Error())
 		}
 	}
+
+	// Start the GQL server in a goroutine.
+	go gql.Server(app.BaseApp, app.cdc, app.nsKeeper, app.bondKeeper, app.accountKeeper, app.auctionKeeper)
 
 	return app
 }
