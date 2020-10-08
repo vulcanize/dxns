@@ -165,9 +165,9 @@ func mapToKeyValuePairs(attrs map[string]interface{}) ([]*KeyValue, error) {
 	falseVal := false
 
 	for key, value := range attrs {
-
 		kvPair := &KeyValue{
-			Key: key,
+			Key:   key,
+			Value: &Value{},
 		}
 
 		switch val := value.(type) {

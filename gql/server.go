@@ -39,7 +39,7 @@ func Server(baseApp *bam.BaseApp,
 	// See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
-		Debug:          true,
+		Debug:          false,
 	}).Handler)
 
 	logFile := viper.GetString("log-file")

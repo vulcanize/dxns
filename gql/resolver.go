@@ -65,6 +65,8 @@ func (r *mutationResolver) Submit(ctx context.Context, tx string) (*string, erro
 		return nil, err
 	}
 
+	r.baseApp.Logger().Info(string(r.codec.MustMarshalJSON(stdTx)))
+
 	res, err := broadcastTx(r, stdTx)
 	if err != nil {
 		return nil, err

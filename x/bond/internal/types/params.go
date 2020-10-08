@@ -22,7 +22,7 @@ const (
 
 // Default parameter values.
 const (
-	DefaultMaxBondAmount string = "1000000stake"
+	DefaultMaxBondAmount string = "100000000000stake"
 )
 
 // Keys for parameter access

@@ -10,7 +10,7 @@ DEFAULT_PASSPHRASE="12345678"
 NODE_NAME=`hostname`
 CHAIN_ID="wireline-1"
 DENOM=uwire
-
+KEYRING_BACKEND=test
 WNS_CLI_CONFIG_DIR="${HOME}/.wire/dxnscli"
 WNS_SERVER_CONFIG_DIR="${HOME}/.wire/dxnsd"
 
@@ -87,7 +87,7 @@ function reset ()
 function init_config ()
 {
   # https://docs.cosmos.network/master/interfaces/keyring.html
-  dxnscli config keyring-backend file
+  dxnscli config keyring-backend $KEYRING_BACKEND
 
   # Configure the CLI to eliminate the need for the chain-id flag.
   dxnscli config chain-id "${CHAIN_ID}"
@@ -114,7 +114,7 @@ function init_root ()
   echo -e "${PASSPHRASE}" | dxnsd add-genesis-account $(dxnscli keys show root -a) 100000000000000uwire
 
   # Validator stake/bond => 10 million WIRE (out of total 100 million WIRE).
-  echo -e "${PASSPHRASE}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnsd gentx --name root --amount 10000000000000uwire --keyring-backend file --home-client "${WNS_CLI_CONFIG_DIR}"
+  echo -e "${PASSPHRASE}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnsd gentx --name root --amount 10000000000000uwire --keyring-backend $KEYRING_BACKEND --home-client "${WNS_CLI_CONFIG_DIR}"
   dxnsd collect-gentxs
   dxnsd validate-genesis
 }
