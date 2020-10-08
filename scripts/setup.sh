@@ -103,6 +103,7 @@ function init_node ()
 
   # Change the staking unit.
   sed -i $SED_ARGS "s/stake/${DENOM}/g" "${WNS_SERVER_CONFIG_DIR}/config/genesis.json"
+  sed -i $SED_ARGS "s/aphoton/seth/g" "${WNS_SERVER_CONFIG_DIR}/config/genesis.json"
 
   # TODO(ashwin): Patch genesis.json with max bond amount?
 }
@@ -111,7 +112,7 @@ function init_root ()
 {
   # Create a genesis validator account provisioned with 100 million WIRE.
   echo -e "${MNEMONIC}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnscli keys add root --recover
-  echo -e "${PASSPHRASE}" | dxnsd add-genesis-account $(dxnscli keys show root -a) 100000000000000uwire
+  echo -e "${PASSPHRASE}" | dxnsd add-genesis-account $(dxnscli keys show root -a) 100000000000000uwire,3500000000000000000seth
 
   # Validator stake/bond => 10 million WIRE (out of total 100 million WIRE).
   echo -e "${PASSPHRASE}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnsd gentx --name root --amount 10000000000000uwire --keyring-backend $KEYRING_BACKEND --home-client "${WNS_CLI_CONFIG_DIR}"
