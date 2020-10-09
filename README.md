@@ -11,12 +11,12 @@ The DXOS Naming Service (DXNS) is a custom blockchain built using Cosmos SDK.
 ### Installation
 
 * Install latest `wire` CLI before setting up `dxnsd`.
-* [Install golang](https://golang.org/doc/install) 1.13.0+ for the required platform.
+* [Install golang](https://golang.org/doc/install) 1.14.0+ for the required platform.
 * Test that `golang` has been successfully installed on the machine.
 
 ```bash
 $ go version
-go version go1.13 linux/amd64
+go version go1.14.9 darwin/amd64
 ```
 
 Set the followin ENV variables (if `go mod` has never been used on the machine).
