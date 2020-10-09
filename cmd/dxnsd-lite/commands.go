@@ -12,8 +12,8 @@ import (
 	sync "github.com/wirelineio/dxns/cmd/dxnsd-lite/sync"
 )
 
-// Version => WNS Lite node version.
-const Version = "0.1.0"
+// Version => DXNS Lite node version.
+const Version = "0.2.0"
 
 var versionCmd = &cobra.Command{
 	Use:   "version",
@@ -25,7 +25,7 @@ var versionCmd = &cobra.Command{
 
 var initCmd = &cobra.Command{
 	Use:   "init",
-	Short: "Initialize the WNS lite node",
+	Short: "Initialize the DXNS lite node",
 	Run: func(cmd *cobra.Command, args []string) {
 		logLevel, _ := cmd.Flags().GetString("log-level")
 		chainID, _ := cmd.Flags().GetString("chain-id")
@@ -51,7 +51,7 @@ var initCmd = &cobra.Command{
 
 var startCmd = &cobra.Command{
 	Use:   "start",
-	Short: "Start the WNS lite node",
+	Short: "Start the DXNS lite node",
 	Run: func(cmd *cobra.Command, args []string) {
 		logLevel, _ := cmd.Flags().GetString("log-level")
 		chainID, _ := cmd.Flags().GetString("chain-id")
@@ -88,7 +88,7 @@ func init() {
 	startCmd.Flags().Bool("gql-playground", true, "Enable GQL playground")
 	startCmd.Flags().String("gql-port", "9473", "Port to use for the GQL server")
 	startCmd.Flags().String("gql-playground-api-base", "", "GQL API base path to use in GQL playground")
-	startCmd.Flags().String("endpoint", "", "WNS GQL endpoint to discover additional RPC nodes")
+	startCmd.Flags().String("endpoint", "", "DXNS GQL endpoint to discover additional RPC nodes")
 
 	// Node can be configured to exit if no sync progress can be made in the past N minutes.
 	// sync-timeout controls that duration e.g., 10mins.

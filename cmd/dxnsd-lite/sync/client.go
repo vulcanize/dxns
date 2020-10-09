@@ -14,6 +14,9 @@ import (
 	"github.com/wirelineio/dxns/x/nameservice"
 )
 
+// DefaultLightNodeHome is the root directory for the dxnsd-lite node.
+const DefaultLightNodeHome = "$HOME/.wire/dxnsd-lite"
+
 const (
 	NameStorePath    = "/store/nameservice/key"
 	AuctionStorePath = "/store/auction/key"

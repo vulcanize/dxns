@@ -30,7 +30,7 @@ func Server(ctx *sync.Context) {
 	// See https://github.com/rs/cors for full option listing
 	router.Use(cors.New(cors.Options{
 		AllowedOrigins: []string{"*"},
-		Debug:          true,
+		Debug:          false,
 	}).Handler)
 
 	keeper := sync.NewKeeper(ctx)
@@ -50,10 +50,10 @@ func Server(ctx *sync.Context) {
 	}})))
 
 	if viper.GetBool("gql-playground") {
-		router.Handle("/webui", handler.Playground("WNS Lite", apiBase+"/api"))
+		router.Handle("/webui", handler.Playground("DXNS Lite", apiBase+"/api"))
 
 		// TODO(ashwin): Kept for backward compat.
-		router.Handle("/console", handler.Playground("WNS Lite", apiBase+"/graphql"))
+		router.Handle("/console", handler.Playground("DXNS Lite", apiBase+"/graphql"))
 	}
 
 	err := http.ListenAndServe(":"+viper.GetString("gql-port"), router)

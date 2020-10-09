@@ -16,7 +16,7 @@ import (
 )
 
 // LiteNodeDataPath is the path to the lite node data folder.
-var LiteNodeDataPath = os.ExpandEnv("$HOME/.wire/dxnsd-lite/data")
+const LiteNodeDataPath = sync.DefaultLightNodeHome + "/data"
 
 // Resolver is the GQL query resolver.
 type Resolver struct {
@@ -143,7 +143,7 @@ func (r *queryResolver) GetLogs(ctx context.Context, count *int) ([]string, erro
 func (r *queryResolver) GetStatus(ctx context.Context) (*baseGql.Status, error) {
 	statusRecord := r.Keeper.GetStatusRecord()
 
-	diskUsage, err := baseGql.GetDiskUsage(LiteNodeDataPath)
+	diskUsage, err := baseGql.GetDiskUsage(os.ExpandEnv(LiteNodeDataPath))
 	if err != nil {
 		return nil, err
 	}
