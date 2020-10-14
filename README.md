@@ -81,7 +81,7 @@ $ ./scripts/server.sh stop
 REST server for Ethermint RPC:
 
 ```bash
-$ dxnscli rest-server --laddr "tcp://localhost:8545" --trace --chain-id wireline-1 --unlock-key root
+$ dxnscli rest-server --laddr "tcp://localhost:8545" --trace --chain-id 1 --unlock-key root
 ```
 
 ## DXNS CLI

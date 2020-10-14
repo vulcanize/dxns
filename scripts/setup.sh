@@ -8,7 +8,7 @@ DEFAULT_MNEMONIC="salad portion potato insect unknown exile lion soft layer evol
 DEFAULT_PASSPHRASE="12345678"
 
 NODE_NAME=`hostname`
-CHAIN_ID="wireline-1"
+CHAIN_ID="1"
 DENOM=uwire
 KEYRING_BACKEND=test
 WNS_CLI_CONFIG_DIR="${HOME}/.wire/dxnscli"
@@ -103,7 +103,6 @@ function init_node ()
 
   # Change the staking unit.
   sed -i $SED_ARGS "s/stake/${DENOM}/g" "${WNS_SERVER_CONFIG_DIR}/config/genesis.json"
-  sed -i $SED_ARGS "s/aphoton/seth/g" "${WNS_SERVER_CONFIG_DIR}/config/genesis.json"
 
   # TODO(ashwin): Patch genesis.json with max bond amount?
 }
@@ -111,8 +110,8 @@ function init_node ()
 function init_root ()
 {
   # Create a genesis validator account provisioned with 100 million WIRE.
-  echo -e "${MNEMONIC}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnscli keys add root --recover
-  echo -e "${PASSPHRASE}" | dxnsd add-genesis-account $(dxnscli keys show root -a) 100000000000000uwire,3500000000000000000seth
+  echo -e "${MNEMONIC}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnscli keys add root --algo eth_secp256k1 --recover
+  echo -e "${PASSPHRASE}" | dxnsd add-genesis-account $(dxnscli keys show root -a) 100000000000000uwire,3500000000000000000photon
 
   # Validator stake/bond => 10 million WIRE (out of total 100 million WIRE).
   echo -e "${PASSPHRASE}\n${PASSPHRASE}\n${PASSPHRASE}" | dxnsd gentx --name root --amount 10000000000000uwire --keyring-backend $KEYRING_BACKEND --home-client "${WNS_CLI_CONFIG_DIR}"

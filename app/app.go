@@ -203,7 +203,7 @@ func NewAppInit(
 	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
 	app.subspaces[crisis.ModuleName] = app.paramsKeeper.Subspace(crisis.DefaultParamspace)
 	app.subspaces[evidence.ModuleName] = app.paramsKeeper.Subspace(evidence.DefaultParamspace)
-	app.subspaces[evm.ModuleName] = app.paramsKeeper.Subspace(evm.DefaultParamspace)
+	app.subspaces[evm.ModuleName] = app.paramsKeeper.Subspace(evm.ModuleName)
 	app.subspaces[bond.ModuleName] = app.paramsKeeper.Subspace(bond.DefaultParamspace)
 	app.subspaces[auction.ModuleName] = app.paramsKeeper.Subspace(auction.DefaultParamspace)
 	app.subspaces[ns.ModuleName] = app.paramsKeeper.Subspace(ns.DefaultParamspace)
@@ -242,7 +242,7 @@ func NewAppInit(
 	app.upgradeKeeper = upgrade.NewKeeper(skipUpgradeHeights, keys[upgrade.StoreKey], app.cdc)
 
 	app.EvmKeeper = evm.NewKeeper(
-		app.cdc, keys[evm.StoreKey], app.subspaces[evm.ModuleName], app.accountKeeper,
+		app.cdc, keys[evm.StoreKey], app.accountKeeper,
 	)
 
 	app.auctionKeeper = auction.NewKeeper(
@@ -361,7 +361,7 @@ func NewAppInit(
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(ante.NewAnteHandler(app.accountKeeper, app.EvmKeeper, app.supplyKeeper))
+	app.SetAnteHandler(ante.NewAnteHandler(app.accountKeeper, app.bankKeeper, app.supplyKeeper))
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {

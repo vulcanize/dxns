@@ -8,7 +8,7 @@ WNS_GQL_ENDPOINT=""
 RESET=
 SCRIPT_DIR="$(dirname "$0")"
 SYNC_TIMEOUT=10
-CHAIN_ID="wireline-1"
+CHAIN_ID="1"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]; do
