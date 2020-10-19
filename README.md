@@ -34,8 +34,8 @@ Clone the repo then build and install the binaries.
 
 ```bash
 $ cd ~/wireline
-$ git clone git@github.com:wirelineio/wns.git
-$ cd wns
+$ git clone git@github.com:wirelineio/dxns.git
+$ cd dxns
 $ make install
 ```
 
@@ -76,12 +76,6 @@ Stop the node:
 
 ```bash
 $ ./scripts/server.sh stop
-```
-
-REST server for Ethermint RPC:
-
-```bash
-$ dxnscli rest-server --laddr "tcp://localhost:8545" --trace --chain-id 1 --unlock-key root
 ```
 
 ## DXNS CLI
