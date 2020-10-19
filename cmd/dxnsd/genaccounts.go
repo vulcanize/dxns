@@ -19,11 +19,6 @@ import (
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
-
-	"github.com/cosmos/ethermint/crypto"
-	ethermint "github.com/cosmos/ethermint/types"
-
-	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 )
 
 const (
@@ -60,7 +55,6 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 					viper.GetString(flags.FlagKeyringBackend),
 					viper.GetString(flagClientHome),
 					inBuf,
-					crypto.EthSecp256k1Options()...,
 				)
 				if err != nil {
 					return err
@@ -114,10 +108,7 @@ contain valid denominations. Accounts may optionally be supplied with vesting pa
 					return errors.New("invalid vesting parameters; must supply start and end time or end time")
 				}
 			} else {
-				genAccount = ethermint.EthAccount{
-					BaseAccount: baseAccount,
-					CodeHash:    ethcrypto.Keccak256(nil),
-				}
+				genAccount = baseAccount
 			}
 
 			if err := genAccount.Validate(); err != nil {

@@ -10,7 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	ethCrypto "github.com/cosmos/ethermint/crypto"
+	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
 	"github.com/wirelineio/dxns/x/bond"
 	"github.com/wirelineio/dxns/x/nameservice/internal/helpers"
 	"github.com/wirelineio/dxns/x/nameservice/internal/types"
@@ -37,7 +37,12 @@ func (k Keeper) ProcessSetRecord(ctx sdk.Context, msg types.MsgSetRecord) (*type
 
 	record.Owners = []string{}
 	for _, sig := range payload.Signatures {
-		pubKey := ethCrypto.PubKeySecp256k1(helpers.BytesFromBase64(sig.PubKey))
+		pubKey, err := cryptoAmino.PubKeyFromBytes(helpers.BytesFromBase64(sig.PubKey))
+		if err != nil {
+			fmt.Println("Error decoding pubKey from bytes: ", err)
+			return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "Invalid public key.")
+		}
+
 		sigOK := pubKey.VerifyBytes(resourceSignBytes, helpers.BytesFromBase64(sig.Signature))
 		if !sigOK {
 			fmt.Println("Signature mismatch: ", sig.PubKey)

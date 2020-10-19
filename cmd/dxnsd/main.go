@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/viper"
 
 	abci "github.com/tendermint/tendermint/abci/types"
-	tmamino "github.com/tendermint/tendermint/crypto/encoding/amino"
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -16,19 +15,11 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
 	"github.com/cosmos/cosmos-sdk/server"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-
-	ethermintclient "github.com/cosmos/ethermint/client"
-	ethermintcrypto "github.com/cosmos/ethermint/crypto"
 
 	"github.com/wirelineio/dxns/app"
 )
@@ -38,25 +29,12 @@ const flagInvCheckPeriod = "inv-check-period"
 var invCheckPeriod uint
 
 func main() {
-	cobra.EnableCommandSorting = false
+	cdc := app.MakeCodec()
 
-	cdc := app.MakeCodec(app.ModuleBasics)
-
-	tmamino.RegisterKeyType(ethermintcrypto.PubKeySecp256k1{}, ethermintcrypto.PubKeyAminoName)
-	tmamino.RegisterKeyType(ethermintcrypto.PrivKeySecp256k1{}, ethermintcrypto.PrivKeyAminoName)
-
-	keys.CryptoCdc = cdc
-	genutil.ModuleCdc = cdc
-	genutiltypes.ModuleCdc = cdc
-	clientkeys.KeysCdc = cdc
-
-	config := sdk.GetConfig()
-	app.SetBech32Prefixes(config)
-	app.SetBip44CoinType(config)
-	config.Seal()
+	app.SetConfig()
 
 	ctx := server.NewDefaultContext()
-
+	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "dxnsd",
 		Short:             "DXNS Chain App Daemon (server)",
@@ -64,9 +42,7 @@ func main() {
 	}
 	// CLI commands to initialize the chain
 	rootCmd.AddCommand(
-		ethermintclient.ValidateChainID(
-			genutilcli.InitCmd(ctx, cdc, app.ModuleBasics, app.DefaultNodeHome),
-		),
+		genutilcli.InitCmd(ctx, cdc, app.ModuleBasics, app.DefaultNodeHome),
 		genutilcli.CollectGenTxsCmd(ctx, cdc, auth.GenesisAccountIterator{}, app.DefaultNodeHome),
 		genutilcli.MigrateGenesisCmd(ctx, cdc),
 		genutilcli.GenTxCmd(

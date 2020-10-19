@@ -23,11 +23,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/cosmos/ethermint/app/ante"
-	ethermintcodec "github.com/cosmos/ethermint/codec"
-	ethermint "github.com/cosmos/ethermint/types"
-	"github.com/cosmos/ethermint/x/evm"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	tmos "github.com/tendermint/tendermint/libs/os"
@@ -41,13 +36,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 )
-
-func init() {
-	// set the address prefixes
-	config := sdk.GetConfig()
-	SetBech32Prefixes(config)
-	SetBip44CoinType(config)
-}
 
 const appName = "dxns"
 
@@ -77,7 +65,6 @@ var (
 		slashing.AppModuleBasic{},
 		evidence.AppModuleBasic{},
 		upgrade.AppModuleBasic{},
-		evm.AppModuleBasic{},
 
 		bond.AppModule{},
 		auction.AppModule{},
@@ -108,9 +95,7 @@ var (
 
 var _ simapp.App = (*NewApp)(nil)
 
-// NewApp implements an extended ABCI application. It is an application
-// that may process transactions through Ethereum's EVM running atop of
-// Tendermint consensus.
+// NewApp implements an extended ABCI application.
 type NewApp struct {
 	*bam.BaseApp
 	cdc *codec.Codec
@@ -138,7 +123,6 @@ type NewApp struct {
 	DistrKeeper    distr.Keeper
 	paramsKeeper   params.Keeper
 	evidenceKeeper evidence.Keeper
-	EvmKeeper      evm.Keeper
 
 	recordKeeper  ns.RecordKeeper
 	bondKeeper    bond.Keeper
@@ -164,10 +148,10 @@ func NewAppInit(
 	baseAppOptions ...func(*bam.BaseApp),
 ) *NewApp {
 
-	cdc := ethermintcodec.MakeCodec(ModuleBasics)
+	cdc := MakeCodec()
 
 	// use custom Chain transaction decoder
-	bApp := bam.NewBaseApp(appName, logger, db, evm.TxDecoder(cdc), baseAppOptions...)
+	bApp := bam.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc), baseAppOptions...)
 	bApp.SetCommitMultiStoreTracer(traceStore)
 	bApp.SetAppVersion(version.Version)
 
@@ -175,7 +159,6 @@ func NewAppInit(
 		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
 		supply.StoreKey, mint.StoreKey, distr.StoreKey, slashing.StoreKey, gov.StoreKey,
 		params.StoreKey, upgrade.StoreKey, evidence.StoreKey,
-		evm.StoreKey,
 		bond.StoreKey,
 		auction.StoreKey,
 		ns.StoreKey,
@@ -203,14 +186,13 @@ func NewAppInit(
 	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
 	app.subspaces[crisis.ModuleName] = app.paramsKeeper.Subspace(crisis.DefaultParamspace)
 	app.subspaces[evidence.ModuleName] = app.paramsKeeper.Subspace(evidence.DefaultParamspace)
-	app.subspaces[evm.ModuleName] = app.paramsKeeper.Subspace(evm.ModuleName)
 	app.subspaces[bond.ModuleName] = app.paramsKeeper.Subspace(bond.DefaultParamspace)
 	app.subspaces[auction.ModuleName] = app.paramsKeeper.Subspace(auction.DefaultParamspace)
 	app.subspaces[ns.ModuleName] = app.paramsKeeper.Subspace(ns.DefaultParamspace)
 
 	// use custom Chain account for contracts
 	app.accountKeeper = auth.NewAccountKeeper(
-		cdc, keys[auth.StoreKey], app.subspaces[auth.ModuleName], ethermint.ProtoAccount,
+		cdc, keys[auth.StoreKey], app.subspaces[auth.ModuleName], auth.ProtoBaseAccount,
 	)
 	app.bankKeeper = bank.NewBaseKeeper(
 		app.accountKeeper, app.subspaces[bank.ModuleName], app.BlacklistedAccAddrs(),
@@ -240,10 +222,6 @@ func NewAppInit(
 	)
 
 	app.upgradeKeeper = upgrade.NewKeeper(skipUpgradeHeights, keys[upgrade.StoreKey], app.cdc)
-
-	app.EvmKeeper = evm.NewKeeper(
-		app.cdc, keys[evm.StoreKey], app.accountKeeper,
-	)
 
 	app.auctionKeeper = auction.NewKeeper(
 		app.accountKeeper,
@@ -323,7 +301,6 @@ func NewAppInit(
 		distr.NewAppModule(app.DistrKeeper, app.accountKeeper, app.supplyKeeper, app.stakingKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		evidence.NewAppModule(app.evidenceKeeper),
-		evm.NewAppModule(app.EvmKeeper, app.accountKeeper),
 		bond.NewAppModule(app.bondKeeper),
 		auction.NewAppModule(app.auctionKeeper),
 		ns.NewAppModule(app.nsKeeper),
@@ -333,13 +310,13 @@ func NewAppInit(
 	// there is nothing left over in the validator fee pool, so as to keep the
 	// CanWithdrawInvariant invariant.
 	app.mm.SetOrderBeginBlockers(
-		evm.ModuleName, mint.ModuleName, distr.ModuleName, slashing.ModuleName,
+		mint.ModuleName, distr.ModuleName, slashing.ModuleName,
 		evidence.ModuleName,
 	)
 
 	// TODO(ashwin): Include staking, gov and crisis modules.
 	app.mm.SetOrderEndBlockers(
-		evm.ModuleName, crisis.ModuleName, gov.ModuleName, staking.ModuleName, auction.ModuleName, ns.ModuleName,
+		crisis.ModuleName, gov.ModuleName, staking.ModuleName, auction.ModuleName, ns.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -347,7 +324,7 @@ func NewAppInit(
 	app.mm.SetOrderInitGenesis(
 		auth.ModuleName, distr.ModuleName, staking.ModuleName, bank.ModuleName,
 		slashing.ModuleName, gov.ModuleName, mint.ModuleName, supply.ModuleName,
-		crisis.ModuleName, genutil.ModuleName, evidence.ModuleName, evm.ModuleName,
+		crisis.ModuleName, genutil.ModuleName, evidence.ModuleName,
 		bond.ModuleName, auction.ModuleName, ns.ModuleName,
 	)
 
@@ -361,7 +338,15 @@ func NewAppInit(
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(ante.NewAnteHandler(app.accountKeeper, app.bankKeeper, app.supplyKeeper))
+
+	app.SetAnteHandler(
+		auth.NewAnteHandler(
+			app.accountKeeper,
+			app.supplyKeeper,
+			auth.DefaultSigVerificationGasConsumer,
+		),
+	)
+
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {

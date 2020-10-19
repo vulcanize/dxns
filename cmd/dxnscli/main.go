@@ -3,51 +3,35 @@ package main
 import (
 	"fmt"
 	"os"
-
-	"github.com/spf13/cobra"
-
-	tmamino "github.com/tendermint/tendermint/crypto/encoding/amino"
-	"github.com/tendermint/tendermint/libs/cli"
+	"path"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/cosmos/cosmos-sdk/client/lcd"
 	clientrpc "github.com/cosmos/cosmos-sdk/client/rpc"
 	sdkcodec "github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
+	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-
-	ethermintclient "github.com/cosmos/ethermint/client"
-	ethermintcrypto "github.com/cosmos/ethermint/crypto"
-	"github.com/cosmos/ethermint/rpc"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/wirelineio/dxns/app"
-)
-
-var (
-	cdc = app.MakeCodec(app.ModuleBasics)
 )
 
 func main() {
 	// Configure cobra to sort commands
 	cobra.EnableCommandSorting = false
 
-	tmamino.RegisterKeyType(ethermintcrypto.PubKeySecp256k1{}, ethermintcrypto.PubKeyAminoName)
-	tmamino.RegisterKeyType(ethermintcrypto.PrivKeySecp256k1{}, ethermintcrypto.PrivKeyAminoName)
+	// Instantiate the codec for the command line application
+	cdc := app.MakeCodec()
 
-	keys.CryptoCdc = cdc
-	clientkeys.KeysCdc = cdc
-
-	// Read in the configuration file for the sdk
-	config := sdk.GetConfig()
-	app.SetBech32Prefixes(config)
-	app.SetBip44CoinType(config)
-	config.Seal()
+	app.SetConfig()
 
 	rootCmd := &cobra.Command{
 		Use:   "dxnscli",
@@ -57,7 +41,7 @@ func main() {
 	// Add --chain-id to persistent flags and mark it required
 	rootCmd.PersistentFlags().String(flags.FlagChainID, "", "Chain ID of tendermint node")
 	rootCmd.PersistentPreRunE = func(_ *cobra.Command, _ []string) error {
-		return ethermintclient.InitConfig(rootCmd)
+		return initConfig(rootCmd)
 	}
 
 	// Construct Root Command
@@ -66,11 +50,9 @@ func main() {
 		client.ConfigCmd(app.DefaultCLIHome),
 		queryCmd(cdc),
 		txCmd(cdc),
-		ethermintclient.ValidateChainID(
-			rpc.EmintServeCmd(cdc),
-		),
+		lcd.ServeCommand(cdc, registerRoutes),
 		flags.LineBreak,
-		ethermintclient.KeyCommands(),
+		keys.Commands(),
 		flags.LineBreak,
 		version.Cmd,
 		flags.NewCompletionCmd(rootCmd, true),
@@ -140,4 +122,37 @@ func txCmd(cdc *sdkcodec.Codec) *cobra.Command {
 	txCmd.RemoveCommand(cmdsToRemove...)
 
 	return txCmd
+}
+
+// registerRoutes registers the routes from the different modules for the LCD.
+// NOTE: details on the routes added for each module are in the module documentation
+// NOTE: If making updates here you also need to update the test helper in client/lcd/test_helper.go
+func registerRoutes(rs *lcd.RestServer) {
+	client.RegisterRoutes(rs.CliCtx, rs.Mux)
+	authrest.RegisterTxRoutes(rs.CliCtx, rs.Mux)
+	app.ModuleBasics.RegisterRESTRoutes(rs.CliCtx, rs.Mux)
+	// this line is used by starport scaffolding # 2
+}
+
+func initConfig(cmd *cobra.Command) error {
+	home, err := cmd.PersistentFlags().GetString(cli.HomeFlag)
+	if err != nil {
+		return err
+	}
+
+	cfgFile := path.Join(home, "config", "config.toml")
+	if _, err := os.Stat(cfgFile); err == nil {
+		viper.SetConfigFile(cfgFile)
+
+		if err := viper.ReadInConfig(); err != nil {
+			return err
+		}
+	}
+	if err := viper.BindPFlag(flags.FlagChainID, cmd.PersistentFlags().Lookup(flags.FlagChainID)); err != nil {
+		return err
+	}
+	if err := viper.BindPFlag(cli.EncodingFlag, cmd.PersistentFlags().Lookup(cli.EncodingFlag)); err != nil {
+		return err
+	}
+	return viper.BindPFlag(cli.OutputFlag, cmd.PersistentFlags().Lookup(cli.OutputFlag))
 }
