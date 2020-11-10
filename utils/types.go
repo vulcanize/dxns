@@ -7,6 +7,7 @@ package utils
 import (
 	"bytes"
 	"encoding/binary"
+	"sort"
 
 	set "github.com/deckarep/golang-set"
 )
@@ -25,6 +26,8 @@ func SetToSlice(set set.Set) []string {
 			names = append(names, name)
 		}
 	}
+
+	sort.SliceStable(names, func(i, j int) bool { return names[i] < names[j] })
 
 	return names
 }
