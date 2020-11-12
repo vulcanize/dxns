@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/tendermint/tendermint/rpc/core"
+	coretypes "github.com/tendermint/tendermint/rpc/core/types"
 	rpctypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
@@ -76,13 +77,8 @@ func GetDiskUsage(dirPath string) (string, error) {
 	return strings.Fields(string(out))[0], nil
 }
 
-func getValidatorSet(ctx *rpctypes.Context) ([]*ValidatorInfo, error) {
-	res, err := core.Validators(ctx, nil, 1, 100)
-
-	if err != nil {
-		return nil, err
-	}
-
+// GetValidatorSet creates the validator set GQL response.
+func GetValidatorSet(res *coretypes.ResultValidators) []*ValidatorInfo {
 	validatorSet := make([]*ValidatorInfo, len(res.Validators))
 	for index, validator := range res.Validators {
 		proposerPriority := strconv.FormatInt(validator.ProposerPriority, 10)
@@ -93,5 +89,15 @@ func getValidatorSet(ctx *rpctypes.Context) ([]*ValidatorInfo, error) {
 		}
 	}
 
-	return validatorSet, nil
+	return validatorSet
+}
+
+func getValidatorSet(ctx *rpctypes.Context) ([]*ValidatorInfo, error) {
+	res, err := core.Validators(ctx, nil, 1, 100)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return GetValidatorSet(res), nil
 }

@@ -73,8 +73,8 @@ type Context struct {
 	config *Config
 	codec  *amino.Codec
 
-	// Primary RPC primaryNode, used for verification.
-	primaryNode *RPCNodeHandler
+	// Primary RPC PrimaryNode, used for verification.
+	PrimaryNode *RPCNodeHandler
 
 	// Other RPC secondaryNodes, used for load distribution.
 	secondaryNodes map[string]*RPCNodeHandler
@@ -120,11 +120,11 @@ func NewContext(config *Config) *Context {
 	ctx.keeper = NewKeeper(&ctx)
 
 	if nodeAddress != "" {
-		ctx.primaryNode = NewRPCNodeHandler(nodeAddress)
+		ctx.PrimaryNode = NewRPCNodeHandler(nodeAddress)
 
 		// Init secondary nodes, as they should have at least one entry.
 		// Don't assume --endpoint flag will be passed for discovery of secondary nodes.
-		ctx.secondaryNodes[nodeAddress] = ctx.primaryNode
+		ctx.secondaryNodes[nodeAddress] = ctx.PrimaryNode
 
 		ctx.verifier = CreateVerifier(config)
 	}

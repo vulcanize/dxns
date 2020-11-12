@@ -39,14 +39,16 @@ func Server(ctx *sync.Context) {
 	apiBase := viper.GetString("gql-playground-api-base")
 
 	router.Handle("/api", handler.GraphQL(baseGql.NewExecutableSchema(baseGql.Config{Resolvers: &Resolver{
-		Keeper:  keeper,
-		LogFile: logFile,
+		PrimaryNode: ctx.PrimaryNode,
+		Keeper:      keeper,
+		LogFile:     logFile,
 	}})))
 
 	// TODO(ashwin): Kept for backward compat.
 	router.Handle("/graphql", handler.GraphQL(baseGql.NewExecutableSchema(baseGql.Config{Resolvers: &Resolver{
-		Keeper:  keeper,
-		LogFile: logFile,
+		PrimaryNode: ctx.PrimaryNode,
+		Keeper:      keeper,
+		LogFile:     logFile,
 	}})))
 
 	if viper.GetBool("gql-playground") {

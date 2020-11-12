@@ -94,12 +94,12 @@ func (ctx *Context) getStoreSubspace(subspace string, key []byte, height int64) 
 	opts := rpcclient.ABCIQueryOptions{Height: height}
 	path := fmt.Sprintf("/store/%s/subspace", subspace)
 
-	ctx.primaryNode.Calls++
-	ctx.primaryNode.LastCalledAt = time.Now().UTC()
+	ctx.PrimaryNode.Calls++
+	ctx.PrimaryNode.LastCalledAt = time.Now().UTC()
 
-	res, err := ctx.primaryNode.Client.ABCIQueryWithOptions(path, key, opts)
+	res, err := ctx.PrimaryNode.Client.ABCIQueryWithOptions(path, key, opts)
 	if err != nil {
-		ctx.primaryNode.Errors++
+		ctx.PrimaryNode.Errors++
 		return nil, err
 	}
 

@@ -20,8 +20,9 @@ const LiteNodeDataPath = sync.DefaultLightNodeHome + "/data"
 
 // Resolver is the GQL query resolver.
 type Resolver struct {
-	Keeper  *sync.Keeper
-	LogFile string
+	PrimaryNode *sync.RPCNodeHandler
+	Keeper      *sync.Keeper
+	LogFile     string
 }
 
 type queryResolver struct{ *Resolver }
@@ -148,9 +149,15 @@ func (r *queryResolver) GetStatus(ctx context.Context) (*baseGql.Status, error) 
 		return nil, err
 	}
 
+	validators, err := r.PrimaryNode.Client.Validators(nil, 1, 100)
+	if err != nil {
+		return nil, err
+	}
+
 	return &baseGql.Status{
-		Version: baseGql.NamserviceVersion,
-		Node:    &baseGql.NodeInfo{Network: r.Keeper.GetChainID()},
+		Version:    baseGql.NamserviceVersion,
+		Node:       &baseGql.NodeInfo{Network: r.Keeper.GetChainID()},
+		Validators: baseGql.GetValidatorSet(validators),
 		Sync: &baseGql.SyncInfo{
 			LatestBlockHeight: strconv.FormatInt(statusRecord.LastSyncedHeight, 10),
 			CatchingUp:        statusRecord.CatchingUp,

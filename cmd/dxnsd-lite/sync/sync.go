@@ -81,7 +81,7 @@ func Start(ctx *Context) {
 	lastSyncedHeight := syncStatus.LastSyncedHeight
 
 	for {
-		chainCurrentHeight, err := ctx.primaryNode.getCurrentHeight()
+		chainCurrentHeight, err := ctx.PrimaryNode.getCurrentHeight()
 		if err != nil {
 			logErrorAndWait(ctx, err)
 			continue
@@ -285,7 +285,7 @@ func logErrorAndWait(ctx *Context, err error) {
 }
 
 func initFromNode(ctx *Context) {
-	height, err := ctx.primaryNode.getCurrentHeight()
+	height, err := ctx.PrimaryNode.getCurrentHeight()
 	if err != nil {
 		ctx.log.Fatalln("Error fetching current height:", err)
 	}
