@@ -73,8 +73,8 @@ function save_secrets ()
   mkdir -p ~/.wire
   echo "Root Account Mnemonic: ${MNEMONIC}" > ~/.wire/secrets
   echo "CLI Passphrase: ${PASSPHRASE}" >> ~/.wire/secrets
-  echo "Wire CLI Keys:" >> ~/.wire/secrets
-  wire keys generate --mnemonic="${MNEMONIC}" >> ~/.wire/secrets
+  echo "To generate wire CLI key:" >> ~/.wire/secrets
+  echo "wire keys generate --mnemonic=\"<MNEMONIC>\"" >> ~/.wire/secrets
 }
 
 function reset ()
