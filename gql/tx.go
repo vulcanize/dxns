@@ -18,13 +18,13 @@ import (
 func decodeStdTx(codec *amino.Codec, tx string) (*auth.StdTx, error) {
 	bytes, err := base64.StdEncoding.DecodeString(tx)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("{ \"log\": \"Tx bytes not base64 encoded.\" }")
 	}
 
 	var stdTx auth.StdTx
 	err = codec.UnmarshalJSON(bytes, &stdTx)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("{ \"log\": \"Invalid Tx bytes, check request JSON.\" }")
 	}
 
 	return &stdTx, nil
