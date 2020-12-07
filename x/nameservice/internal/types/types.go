@@ -57,7 +57,9 @@ func (r Record) GetCreateTime() string {
 func (r Record) GetOwners() []*string {
 	owners := []*string{}
 	for _, owner := range r.Owners {
-		owners = append(owners, &owner)
+		// Note: Without this copy, it's return the same address for all elements in the slice.
+		ownerCopy := string(owner)
+		owners = append(owners, &ownerCopy)
 	}
 
 	return owners
