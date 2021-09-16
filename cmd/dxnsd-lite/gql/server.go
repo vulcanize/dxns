@@ -10,12 +10,12 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/99designs/gqlgen/handler"
-	"github.com/wirelineio/dxns/cmd/dxnsd-lite/sync"
+	"github.com/vulcanize/dxns/cmd/dxnsd-lite/sync"
 
 	"github.com/go-chi/chi"
 	"github.com/rs/cors"
 
-	baseGql "github.com/wirelineio/dxns/gql"
+	baseGql "github.com/vulcanize/dxns/gql"
 )
 
 // Server configures and starts the GQL server.

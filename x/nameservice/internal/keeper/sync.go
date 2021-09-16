@@ -7,9 +7,9 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/tendermint/go-amino"
-	wnsUtils "github.com/wirelineio/dxns/utils"
-	"github.com/wirelineio/dxns/x/auction"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	wnsUtils "github.com/vulcanize/dxns/utils"
+	"github.com/vulcanize/dxns/x/auction"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 func GetBlockChangesetIndexKey(height int64) []byte {

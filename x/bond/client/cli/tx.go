@@ -16,7 +16,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/wirelineio/dxns/x/bond/internal/types"
+	"github.com/vulcanize/dxns/x/bond/internal/types"
 )
 
 // GetTxCmd returns transaction commands for this module.

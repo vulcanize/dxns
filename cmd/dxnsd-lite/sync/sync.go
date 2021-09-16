@@ -14,8 +14,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/wirelineio/dxns/x/auction"
-	ns "github.com/wirelineio/dxns/x/nameservice"
+	"github.com/vulcanize/dxns/x/auction"
+	ns "github.com/vulcanize/dxns/x/nameservice"
 )
 
 // AggressiveSyncIntervalInMillis is the interval for aggressive sync, to catch up quickly to the current height.

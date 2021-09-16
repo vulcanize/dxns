@@ -6,7 +6,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 // GetParams - Get all parameteras as types.Params.

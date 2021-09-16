@@ -19,8 +19,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/tendermint/go-amino"
-	wnsUtils "github.com/wirelineio/dxns/utils"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	wnsUtils "github.com/vulcanize/dxns/utils"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 // CompletedAuctionDeleteTimeout => Completed auctions are deleted after this timeout (after reveals end time).

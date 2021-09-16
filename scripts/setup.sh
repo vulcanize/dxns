@@ -8,7 +8,7 @@ DEFAULT_MNEMONIC="salad portion potato insect unknown exile lion soft layer evol
 DEFAULT_PASSPHRASE="12345678"
 
 NODE_NAME=`hostname`
-CHAIN_ID="wireline-1"
+CHAIN_ID="vulcanize-1"
 DENOM=uwire
 KEYRING_BACKEND=test
 WNS_CLI_CONFIG_DIR="${HOME}/.wire/dxnscli"

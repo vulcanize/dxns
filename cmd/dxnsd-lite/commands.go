@@ -8,8 +8,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/wirelineio/dxns/cmd/dxnsd-lite/gql"
-	sync "github.com/wirelineio/dxns/cmd/dxnsd-lite/sync"
+	"github.com/vulcanize/dxns/cmd/dxnsd-lite/gql"
+	sync "github.com/vulcanize/dxns/cmd/dxnsd-lite/sync"
 )
 
 // Version => DXNS Lite node version.

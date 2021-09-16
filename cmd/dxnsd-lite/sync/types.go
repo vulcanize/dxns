@@ -17,8 +17,8 @@ import (
 	tmlite "github.com/tendermint/tendermint/lite"
 	rpcclient "github.com/tendermint/tendermint/rpc/client/http"
 	dbm "github.com/tendermint/tm-db"
-	app "github.com/wirelineio/dxns/app"
-	"github.com/wirelineio/dxns/x/nameservice"
+	app "github.com/vulcanize/dxns/app"
+	"github.com/vulcanize/dxns/x/nameservice"
 )
 
 // AppState is used to import initial app state (records, names) into the db.

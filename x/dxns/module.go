@@ -13,10 +13,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/wirelineio/dxns/x/dxns/client/cli"
-	"github.com/wirelineio/dxns/x/dxns/client/rest"
-	"github.com/wirelineio/dxns/x/dxns/keeper"
-	"github.com/wirelineio/dxns/x/dxns/types"
+	"github.com/vulcanize/dxns/x/dxns/client/cli"
+	"github.com/vulcanize/dxns/x/dxns/client/rest"
+	"github.com/vulcanize/dxns/x/dxns/keeper"
+	"github.com/vulcanize/dxns/x/dxns/types"
 )
 
 // Type check to ensure the interface is properly implemented

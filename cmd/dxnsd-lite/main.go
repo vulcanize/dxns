@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
-	sync "github.com/wirelineio/dxns/cmd/dxnsd-lite/sync"
+	sync "github.com/vulcanize/dxns/cmd/dxnsd-lite/sync"
 )
 
 func main() {
@@ -20,7 +20,7 @@ func main() {
 		Short: "DXNS Lite",
 	}
 
-	rootCmd.PersistentFlags().String("chain-id", "wireline-1", "Chain identifier")
+	rootCmd.PersistentFlags().String("chain-id", "vulcanize-1", "Chain identifier")
 	rootCmd.PersistentFlags().String("log-level", "debug", "Log level")
 	rootCmd.PersistentFlags().StringP("node", "n", "tcp://localhost:26657", "Upstream WNS node RPC address")
 	rootCmd.PersistentFlags().String("log-file", "", "File to tail for GQL 'getLogs' API")

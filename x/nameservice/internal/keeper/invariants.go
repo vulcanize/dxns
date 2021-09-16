@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 // RegisterInvariants registers all nameservice module invariants.

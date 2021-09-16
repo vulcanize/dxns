@@ -7,7 +7,7 @@ package bond
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/wirelineio/dxns/x/bond/internal/types"
+	"github.com/vulcanize/dxns/x/bond/internal/types"
 )
 
 type GenesisState struct {

@@ -8,8 +8,8 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/wirelineio/dxns/x/bond"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	"github.com/vulcanize/dxns/x/bond"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"

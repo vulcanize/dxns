@@ -16,11 +16,11 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
-	wnsUtils "github.com/wirelineio/dxns/utils"
-	"github.com/wirelineio/dxns/x/auction"
-	"github.com/wirelineio/dxns/x/bond"
-	"github.com/wirelineio/dxns/x/nameservice/internal/helpers"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	wnsUtils "github.com/vulcanize/dxns/utils"
+	"github.com/vulcanize/dxns/x/auction"
+	"github.com/vulcanize/dxns/x/bond"
+	"github.com/vulcanize/dxns/x/nameservice/internal/helpers"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 // NoExpiry => really long duration (used to indicate no-expiry).

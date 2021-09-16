@@ -15,9 +15,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/tendermint/go-amino"
-	"github.com/wirelineio/dxns/x/auction"
-	"github.com/wirelineio/dxns/x/bond"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	"github.com/vulcanize/dxns/x/auction"
+	"github.com/vulcanize/dxns/x/bond"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 // PrefixCIDToRecordIndex is the prefix for CID -> Record index.

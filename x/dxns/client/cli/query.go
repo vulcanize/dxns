@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/wirelineio/dxns/x/dxns/types"
+	"github.com/vulcanize/dxns/x/dxns/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

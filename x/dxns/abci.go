@@ -3,7 +3,7 @@ package dxns
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/wirelineio/dxns/x/dxns/keeper"
+	"github.com/vulcanize/dxns/x/dxns/keeper"
 	// abci "github.com/tendermint/tendermint/abci/types"
 )
 

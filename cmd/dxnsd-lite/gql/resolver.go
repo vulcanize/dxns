@@ -9,10 +9,10 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/wirelineio/dxns/cmd/dxnsd-lite/sync"
-	baseGql "github.com/wirelineio/dxns/gql"
-	"github.com/wirelineio/dxns/x/auction"
-	"github.com/wirelineio/dxns/x/nameservice"
+	"github.com/vulcanize/dxns/cmd/dxnsd-lite/sync"
+	baseGql "github.com/vulcanize/dxns/gql"
+	"github.com/vulcanize/dxns/x/auction"
+	"github.com/vulcanize/dxns/x/nameservice"
 )
 
 // LiteNodeDataPath is the path to the lite node data folder.

@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/wirelineio/dxns/x/dxns/keeper"
-	"github.com/wirelineio/dxns/x/dxns/types"
+	"github.com/vulcanize/dxns/x/dxns/keeper"
+	"github.com/vulcanize/dxns/x/dxns/types"
 )
 
 // NewHandler ...
