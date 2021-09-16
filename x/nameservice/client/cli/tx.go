@@ -23,8 +23,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/wirelineio/dxns/x/nameservice/internal/helpers"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	"github.com/vulcanize/dxns/x/nameservice/internal/helpers"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 // GetTxCmd returns transaction commands for this module.

@@ -5,7 +5,7 @@
 #
 
 WNS_LITE_SERVER_CONFIG_DIR="${HOME}/.wire/dxnsd-lite"
-CHAIN_ID="wireline-1"
+CHAIN_ID="vulcanize-1"
 WNS_NODE_ADDRESS="tcp://localhost:26657"
 RESET=
 

@@ -5,8 +5,8 @@
 package auction
 
 import (
-	"github.com/wirelineio/dxns/x/auction/internal/keeper"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	"github.com/vulcanize/dxns/x/auction/internal/keeper"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 const (

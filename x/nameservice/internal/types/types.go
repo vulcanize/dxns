@@ -10,9 +10,9 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	canonicalJson "github.com/gibson042/canonicaljson-go"
-	"github.com/wirelineio/dxns/x/auction"
-	"github.com/wirelineio/dxns/x/bond"
-	"github.com/wirelineio/dxns/x/nameservice/internal/helpers"
+	"github.com/vulcanize/dxns/x/auction"
+	"github.com/vulcanize/dxns/x/bond"
+	"github.com/vulcanize/dxns/x/nameservice/internal/helpers"
 )
 
 type AutorityStatus string

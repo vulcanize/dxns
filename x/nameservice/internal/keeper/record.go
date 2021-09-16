@@ -11,9 +11,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
-	"github.com/wirelineio/dxns/x/bond"
-	"github.com/wirelineio/dxns/x/nameservice/internal/helpers"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	"github.com/vulcanize/dxns/x/bond"
+	"github.com/vulcanize/dxns/x/nameservice/internal/helpers"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 // ProcessSetRecord creates a record.

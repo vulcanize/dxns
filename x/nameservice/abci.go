@@ -7,7 +7,7 @@ package nameservice
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/wirelineio/dxns/x/nameservice/internal/keeper"
+	"github.com/vulcanize/dxns/x/nameservice/internal/keeper"
 )
 
 // EndBlocker is called every block, returns updated validator set.

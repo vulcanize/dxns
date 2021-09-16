@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/wirelineio/dxns/x/bond/internal/types"
+	"github.com/vulcanize/dxns/x/bond/internal/types"
 )
 
 // NewHandler returns a handler for "bond" type messages.

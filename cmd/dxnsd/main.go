@@ -21,7 +21,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/wirelineio/dxns/app"
+	"github.com/vulcanize/dxns/app"
 )
 
 const flagInvCheckPeriod = "inv-check-period"

@@ -15,7 +15,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 	"github.com/cosmos/cosmos-sdk/x/supply"
-	"github.com/wirelineio/dxns/x/bond/internal/types"
+	"github.com/vulcanize/dxns/x/bond/internal/types"
 )
 
 // prefixIDToBondIndex is the prefix for ID -> Bond index in the KVStore.

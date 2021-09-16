@@ -7,7 +7,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	bond "github.com/wirelineio/dxns/x/bond"
+	bond "github.com/vulcanize/dxns/x/bond"
 )
 
 // RouterKey is the module name router key

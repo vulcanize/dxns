@@ -9,7 +9,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 // NewHandler returns a handler for "auction" type messages.

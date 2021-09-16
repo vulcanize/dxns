@@ -8,7 +8,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 // RegisterInvariants registers all auction module invariants.

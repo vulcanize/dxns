@@ -10,7 +10,7 @@ import (
 	"encoding/json"
 
 	"github.com/machinebox/graphql"
-	"github.com/wirelineio/dxns/gql"
+	"github.com/vulcanize/dxns/gql"
 )
 
 const query = `

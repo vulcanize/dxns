@@ -7,8 +7,8 @@ package sync
 import (
 	"github.com/cosmos/cosmos-sdk/store"
 	"github.com/tendermint/go-amino"
-	"github.com/wirelineio/dxns/x/auction"
-	ns "github.com/wirelineio/dxns/x/nameservice"
+	"github.com/vulcanize/dxns/x/auction"
+	ns "github.com/vulcanize/dxns/x/nameservice"
 )
 
 // Keeper is an impl. of an interface similar to the nameservice Keeper.

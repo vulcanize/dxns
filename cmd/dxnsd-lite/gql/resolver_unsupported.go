@@ -8,7 +8,7 @@ import (
 	"context"
 	"errors"
 
-	baseGql "github.com/wirelineio/dxns/gql"
+	baseGql "github.com/vulcanize/dxns/gql"
 )
 
 type mutationResolver struct{ *Resolver }

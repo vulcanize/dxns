@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
-	sync "github.com/wirelineio/dxns/cmd/dxnsd-lite/sync"
+	sync "github.com/vulcanize/dxns/cmd/dxnsd-lite/sync"
 )
 
 func main() {

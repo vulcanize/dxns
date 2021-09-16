@@ -5,8 +5,8 @@
 package nameservice
 
 import (
-	"github.com/wirelineio/dxns/x/nameservice/internal/keeper"
-	"github.com/wirelineio/dxns/x/nameservice/internal/types"
+	"github.com/vulcanize/dxns/x/nameservice/internal/keeper"
+	"github.com/vulcanize/dxns/x/nameservice/internal/types"
 )
 
 const (

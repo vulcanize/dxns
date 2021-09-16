@@ -5,8 +5,8 @@
 package bond
 
 import (
-	"github.com/wirelineio/dxns/x/bond/internal/keeper"
-	"github.com/wirelineio/dxns/x/bond/internal/types"
+	"github.com/vulcanize/dxns/x/bond/internal/keeper"
+	"github.com/vulcanize/dxns/x/bond/internal/types"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/wirelineio/dxns/x/dxns/types"
+	"github.com/vulcanize/dxns/x/dxns/types"
 )
 
 // Keeper of the dxns store

@@ -11,7 +11,7 @@ import (
 
 	storeTypes "github.com/cosmos/cosmos-sdk/store/types"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
-	"github.com/wirelineio/dxns/x/nameservice"
+	"github.com/vulcanize/dxns/x/nameservice"
 )
 
 // DefaultLightNodeHome is the root directory for the dxnsd-lite node.

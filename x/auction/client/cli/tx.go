@@ -19,8 +19,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	wnsUtils "github.com/wirelineio/dxns/utils"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	wnsUtils "github.com/vulcanize/dxns/utils"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 // GetTxCmd returns transaction commands for this module.

@@ -1,4 +1,4 @@
-module github.com/wirelineio/dxns
+module github.com/vulcanize/dxns
 
 go 1.14
 

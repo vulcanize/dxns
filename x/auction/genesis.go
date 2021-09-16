@@ -7,7 +7,7 @@ package auction
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/wirelineio/dxns/x/auction/internal/types"
+	"github.com/vulcanize/dxns/x/auction/internal/types"
 )
 
 type GenesisState struct {
