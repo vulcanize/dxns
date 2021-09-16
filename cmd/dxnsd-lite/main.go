@@ -20,7 +20,7 @@ func main() {
 		Short: "DXNS Lite",
 	}
 
-	rootCmd.PersistentFlags().String("chain-id", "wireline-1", "Chain identifier")
+	rootCmd.PersistentFlags().String("chain-id", "vulcanize-1", "Chain identifier")
 	rootCmd.PersistentFlags().String("log-level", "debug", "Log level")
 	rootCmd.PersistentFlags().StringP("node", "n", "tcp://localhost:26657", "Upstream WNS node RPC address")
 	rootCmd.PersistentFlags().String("log-file", "", "File to tail for GQL 'getLogs' API")
