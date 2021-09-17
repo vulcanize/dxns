@@ -15,8 +15,8 @@ import (
 	rpctypes "github.com/tendermint/tendermint/rpc/jsonrpc/types"
 )
 
-// NodeDataPath is the path to the wnsd data folder.
-var NodeDataPath = os.ExpandEnv("$HOME/.wire/wnsd/data")
+// NodeDataPath is the path to the dxnsd data folder.
+var NodeDataPath = os.ExpandEnv("$HOME/.wire/dxnsd/data")
 
 func getStatusInfo(ctx *rpctypes.Context) (*NodeInfo, *SyncInfo, *ValidatorInfo, error) {
 	res, err := core.Status(ctx)
