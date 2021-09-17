@@ -2,24 +2,20 @@
 
 The DXOS Naming Service (DXNS) is a custom blockchain built using Cosmos SDK.
 
-| Module   | Status | Public URL |
-| -------- | ------ | ---------- |
-| DXOS DOCS DXNS | [![Netlify Status](https://api.netlify.com/api/v1/badges/6bbab0ad-84ad-4d77-a575-420940dc55af/deploy-status)](https://app.netlify.com/sites/dxos-docs-wns/deploys) | https://dxos-docs-wns.netlify.app/wns/ |
-
 ## Getting Started
 
 ### Installation
 
-* Install latest `wire` CLI before setting up `dxnsd`.
 * [Install golang](https://golang.org/doc/install) 1.14.0+ for the required platform.
-* Test that `golang` has been successfully installed on the machine.
+* Ensure that the version installed is older than 1.16 as `crypto/hmac` panics while using `dxnscli` in newer versions.
+* Test that the correct version of `golang` has been successfully installed on the machine.
 
 ```bash
 $ go version
 go version go1.14.9 darwin/amd64
 ```
 
-Set the followin ENV variables (if `go mod` has never been used on the machine).
+Set the following ENV variables (if `go mod` has never been used on the machine).
 
 ```bash
 mkdir -p $HOME/go/bin
@@ -33,8 +29,7 @@ source ~/.profile
 Clone the repo then build and install the binaries.
 
 ```bash
-$ cd ~/wireline
-$ git clone git@github.com:wirelineio/dxns.git
+$ git clone git@github.com:vulcanize/dxns.git
 $ cd dxns
 $ make install
 ```
@@ -84,7 +79,7 @@ $ ./scripts/server.sh stop
 
 ## Tests
 
-See https://github.com/wirelineio/registry-client#tests
+See https://github.com/vulcanize/dxns-registry-client#tests
 
 
 ## GQL Server API
